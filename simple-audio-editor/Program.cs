@@ -54,8 +54,10 @@ namespace simple_audio_editor
 
                 /*p.BeginErrorReadLine();
                 p.BeginOutputReadLine();*/
-
+                
                 p.WaitForExit();
+                return $"result: {p.ExitCode}";
+
             }
 
             return "done";
