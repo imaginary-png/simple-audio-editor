@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 
 namespace simple_audio_editor
 {
@@ -9,7 +10,7 @@ namespace simple_audio_editor
         static void Main(string[] args)
         {
             // test inputs
-            var input = "C:\\PROGRAMMING STUFF\\C#\\simple-audio-editor\\test.mp3";
+            var input = "C:\\PROGRAMMING STUFF\\C#\\simple-audio-editor\\test1.mp3";
             var output = "C:\\PROGRAMMING STUFF\\C#\\simple-audio-editor\\OUTPUT.mp3";
             var ffmpegPath = "C:\\ffmpeg\\bin\\ffmpeg.exe";
 
@@ -27,8 +28,18 @@ namespace simple_audio_editor
             Console.WriteLine($"-------------------------------\n{arguments}\n-------------------------------");
 
             // Start ffmpeg process with actual arguments
-            var result = Execute(ffmpegPath, arguments);
-            Console.WriteLine(result);
+            if (File.Exists(input))
+            {
+                var result = Execute(ffmpegPath, arguments);
+                Console.WriteLine(result);
+            }
+            else
+            {
+                Console.WriteLine("File not found.");
+            }
+            
+            var opt = new FFmpegOptions();
+            opt.Input = "Fdfs";
 
         }
 
@@ -36,6 +47,7 @@ namespace simple_audio_editor
         private static string Execute(string exePath, string parameters)
         {
             string result = String.Empty;
+            var exitCode = 1;
 
             using (Process p = new Process())
             {
@@ -56,11 +68,19 @@ namespace simple_audio_editor
                 p.BeginOutputReadLine();*/
                 
                 p.WaitForExit();
-                return $"result: {p.ExitCode}";
 
+                //1 = fail 0 = success
+                exitCode = p.ExitCode;
             }
 
-            return "done";
+            if (exitCode == 0)
+            {
+                return "done";
+            }
+            else
+            {
+                return "failed";
+            }
         }
 
 
