@@ -35,7 +35,14 @@ namespace simple_audio_editor
             return $"-i \"{options.Input}\" -filter_complex \"volume={options.Volume}\" {bitRateArg} \"{options.Output}\"";
         }
 
-
+        /// <summary>
+        /// Loops through and passes the trim Start and End values to the TrimSection method to create the concatenated string of all trim actions.<br/>
+        /// Finally, appends the concat arg needed to merge the streams. <br/>
+        /// See: https://ffmpeg.org/ffmpeg-filters.html#atrim <br/>
+        /// https://trac.ffmpeg.org/wiki/Concatenate
+        /// </summary>
+        /// <param name="options"></param>
+        /// <returns></returns>
         internal static string CreateTrimArg(FFmpegOptions options)
         {
             var trimArg = "";
@@ -45,14 +52,10 @@ namespace simple_audio_editor
             for (; count < options.TrimStart.Count; count++)
             {
                 trimArg += TrimSection(count, options.TrimStart[count], options.TrimEnd[count], options.Volume);
+                concatArg += $"[{count}a]";
             }
 
-            for (int i = 0; i < count; i++)
-            {
-                concatArg += $"[{i}a]";
-            }
-
-            concatArg += $"concat=n={count}:v=0:a=1[outa]";
+            concatArg += $"concat=n={count}:v=0:a=1[outa]"; //merge into stream outa
 
             return trimArg + concatArg;
         }
@@ -62,6 +65,7 @@ namespace simple_audio_editor
         /// e.g. TrimSection(30,90) would save a one minute clip from 30s to 90s. <br/>
         /// Multiple subsections can be chosen for the output file. <br/>
         /// Leaving out the end param will save the section from the start param to end of file. <br/>
+        /// See: https://ffmpeg.org/ffmpeg-filters.html#atrim <br/>
         /// Maybe this should be called Clip or SaveSection or something, but the ffmpeg audio filter is called atrim.
         /// </summary>
         /// <param name="count">The trim section number</param>
@@ -74,7 +78,6 @@ namespace simple_audio_editor
             {
                 return $"[0:a]atrim=start={startTimeInSeconds}:end={endTimeInSeconds},volume={volume},asetpts=PTS-STARTPTS[{count}a];";
             }
-
 
             return $"[0:a]atrim=start={startTimeInSeconds},volume={volume},asetpts=PTS-STARTPTS[{count}a];";
 

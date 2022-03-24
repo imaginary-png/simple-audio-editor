@@ -113,7 +113,7 @@ namespace simple_audio_editor
         /// Used to set arguments for the FFmpeg command-line. You need to set a valid input and output path, and your ffmpeg.exe path. <br/>
         /// Defaults: Input, Output, FFmpegPath = "". Volume = 1.0. Bit Rate = 128.
         /// </summary>
-        public FFmpegOptions() //remove
+      /*  public FFmpegOptions() //remove
         {
             Input = "C:\\PROGRAMMING STUFF\\C#\\simple-audio-editor\\test.mp3";
             Output = "C:\\PROGRAMMING STUFF\\C#\\simple-audio-editor\\OUTPUT.mp3";
@@ -133,7 +133,7 @@ namespace simple_audio_editor
             //_bitRateArg += "-b:a 128k";x
 
             Console.WriteLine($"-------------------------------\n{_arguments}\n-------------------------------");
-        }
+        }*/
 
         public FFmpegOptions(string input, string output, string ffmpegPath, double volume = 1.0, int bitRate = DefaultBitRate)
         {
@@ -185,21 +185,6 @@ namespace simple_audio_editor
             TrimEnd.Add(end);
             TrimFlag = true;
         }
-
-        /// <summary>
-        /// Trim a section of the audio and keep that subsection. <br/>
-        /// e.g. TrimSection(30,90) would save a one minute clip from 30s to 90s. <br/>
-        /// Multiple subsections can be chosen for the output file. <br/>
-        /// Leaving out the end param will save the section from the start param to end of file. <br/>
-        /// Maybe this should be called Clip or SaveSection or something, but the ffmpeg audio filter is called atrim.
-        /// </summary>
-        /// <param name="startTimeInSeconds">Save section from: (seconds)</param>
-        /// <param name="endTimeInSeconds">Save section to: (seconds)<br/>Default: 0</param>
-        public void TrimSection(int startTimeInSeconds, int endTimeInSeconds = 0)
-        {
-
-        }
-
 
     }
 }
