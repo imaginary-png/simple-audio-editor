@@ -3,25 +3,55 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace simple_audio_editor
 {
     public class FFmpegProcess
     {
         //
-        private IList<FFmpegOptions> _queue;
+        public IList<FFmpegOptions> OptionsQueue { get; private set; }
 
+        private IList<Task<(string, bool)>> _taskQueue;
 
-        //begin conversion of each item in the queue.
-        //call the  argsbuilder first? or do that elsewhere? A list of args from addtoqueue?
-        public bool Start()
+        public FFmpegProcess(List<FFmpegOptions> optionsQueue)
         {
+            OptionsQueue = optionsQueue;
+            _taskQueue = new List<Task<(string, bool)>>();
+        }
+        
+        /// <summary>
+        /// Begin asynchronous conversion of FFmpegOptions stored in the queue
+        /// </summary>
+        /// <returns></returns>
+        public async Task<bool> Start()
+        {
+            foreach (var option in OptionsQueue)
+            {
+                _taskQueue.Add(Task.Run(() => Execute(FFmpegArgsBuilder.Create(option))));
+            }
 
+            var total = 0;
+            while (_taskQueue.Any())
+            {
+                Task<(string, bool)> finishedTask = await Task.WhenAny(_taskQueue);
+                _taskQueue.Remove(finishedTask);
 
+                var (input, result) = await finishedTask;
+
+                Console.ForegroundColor = ConsoleColor.DarkCyan;
+                Console.WriteLine($"{input} {result}");
+                Console.ResetColor();
+
+                total += 1;
+            }
+
+            Console.WriteLine($"finished converting {total} files.");
             return false;
         }
 
-        private bool Execute(string parameters)
+        private (string, bool) Execute(string parameters)
         {
             string result = String.Empty;
             var exitCode = 1;
@@ -30,19 +60,21 @@ namespace simple_audio_editor
             {
                 p.StartInfo.UseShellExecute = false;
                 p.StartInfo.CreateNoWindow = true;
-                /*
+
                 p.StartInfo.RedirectStandardOutput = true;
+                p.OutputDataReceived += (sender, args) => Console.WriteLine("received output: {0}", args.Data);
+
                 //ffmpeg outputs lines as standarderror
                 p.StartInfo.RedirectStandardError = true;
-                p.ErrorDataReceived += (sender, args) => Console.WriteLine("received output: {0}", args.Data);
-                p.OutputDataReceived += (sender, args) => Console.WriteLine("received output: {0}", args.Data);*/
+                //p.ErrorDataReceived += (sender, args) => Console.WriteLine("received Error: {0}", args.Data);
 
                 p.StartInfo.FileName = "ffmpeg.exe";
                 p.StartInfo.Arguments = parameters;
                 p.Start();
 
-                /*p.BeginErrorReadLine();
-                p.BeginOutputReadLine();*/
+                //p.BeginOutputReadLine();
+                p.BeginErrorReadLine();
+
 
                 p.WaitForExit();
 
@@ -50,34 +82,31 @@ namespace simple_audio_editor
                 exitCode = p.ExitCode;
             }
 
+            var start = parameters.IndexOf("-i ") + 3;
+            var input = parameters.Substring(start, parameters.IndexOf("-filter") - start);
+
             if (exitCode == 0)
             {
-                return true;
+                return (input,true);
             }
             else
             {
-                return false;
+                return (input, false);
             }
         }
 
         //helpers
 
-        //add a item to queue
-        public void AddToQueue()
+        /// <summary>
+        /// Queue a FFmpegOptions object for processing
+        /// </summary>
+        /// <param name="option"></param>
+        public void AddToQueue(FFmpegOptions option)
         {
+            OptionsQueue.Add(option);
             //add to queue list
 
             //pass through to argsbuilder.create and add to a list of strings?
         }
-
-        bool CheckFFmpegPath(string path)
-        {
-            if (File.Exists(path)) return true;
-
-
-            return false;
-        }
-
-
     }
 }

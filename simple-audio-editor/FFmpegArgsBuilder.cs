@@ -10,7 +10,8 @@ namespace simple_audio_editor
         static string FFmpegPath = "C:\\ffmpeg\\bin\\ffmpeg.exe";
 
 
-        private static string _beginningArg = $"-y -i \"{Input}\" -filter_complex \"";
+        private static string _beginningArg = $"-y -i \"";
+        private static string _filterArg = "\" -filter_complex \"";
         private static string _trimMapOutArg = $"-map [outa]";
         private static string _endArg = $"\"{Output}\"";
 
@@ -28,11 +29,11 @@ namespace simple_audio_editor
             if (options.TrimFlag)
             {
                 trimArg = CreateTrimArg(options);
-                return $"-i \"{options.Input}\" -filter_complex \"{trimArg}\" {bitRateArg} {_trimMapOutArg} \"{options.Output}\"";
+                return $"{_beginningArg}{options.Input}{_filterArg}{trimArg}\" {bitRateArg} {_trimMapOutArg} \"{options.Output}\"";
             }
 
             //else no trimming, so just adjust volume and/or bitrate;
-            return $"-i \"{options.Input}\" -filter_complex \"volume={options.Volume}\" {bitRateArg} \"{options.Output}\"";
+            return $"{_beginningArg}{options.Input}{_filterArg}volume={options.Volume}\" {bitRateArg} \"{options.Output}\"";
         }
 
         /// <summary>

@@ -100,28 +100,6 @@ namespace simple_audio_editor
         /// Used to set arguments for the FFmpeg command-line. You need to set a valid input and output path, and your ffmpeg.exe path. <br/>
         /// Defaults: Input, Output, FFmpegPath = "". Volume = 1.0. Bit Rate = 128.
         /// </summary>
-      /*  public FFmpegOptions() //remove
-        {
-            Input = "C:\\PROGRAMMING STUFF\\C#\\simple-audio-editor\\test.mp3";
-            Output = "C:\\PROGRAMMING STUFF\\C#\\simple-audio-editor\\OUTPUT.mp3";
-            FFmpegPath = "C:\\ffmpeg\\bin\\ffmpeg.exe";
-
-            Volume = 1.0;
-            BitRate = 128;
-
-            _beginningArg = $"-y -i \"{_input}\" -filter_complex \"";
-
-            _trimMapOutArg = $" -map [outa] ";
-            _endArg = $"\"{_output}\"";
-
-            _arguments = _beginningArg + _volumeArg + _bitRateArg + _endArg;
-
-
-            //_bitRateArg += "-b:a 128k";x
-
-            Console.WriteLine($"-------------------------------\n{_arguments}\n-------------------------------");
-        }*/
-
         public FFmpegOptions(string input, string output, double volume = 1.0, int bitRate = DefaultBitRate)
         {
             _input = input;

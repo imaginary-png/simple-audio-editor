@@ -16,7 +16,7 @@ namespace simple_audio_editor.Tests
         public void Create_NoTrimCreatesCorrectArgString()
         {
             //Arrange
-            string expected = $"-i \"INPUT.mp3\" -filter_complex \"volume=1\" -b:a 128k \"OUTPUT.mp3\"";
+            string expected = $"-y -i \"INPUT.mp3\" -filter_complex \"volume=1\" -b:a 128k \"OUTPUT.mp3\"";
             //Act
             string actual = FFmpegArgsBuilder.Create(new FFmpegOptions("INPUT.mp3", "OUTPUT.mp3"));
 
@@ -28,7 +28,7 @@ namespace simple_audio_editor.Tests
         public void Create_NoTrimCreatesCorrectArgStringWithSetVolume()
         {
             //Arrange
-            string expected = $"-i \"INPUT.mp3\" -filter_complex \"volume=0.6\" -b:a 128k \"OUTPUT.mp3\"";
+            string expected = $"-y -i \"INPUT.mp3\" -filter_complex \"volume=0.6\" -b:a 128k \"OUTPUT.mp3\"";
             //Act
             string actual = FFmpegArgsBuilder.Create(new FFmpegOptions("INPUT.mp3", "OUTPUT.mp3", 0.6));
 
@@ -40,7 +40,7 @@ namespace simple_audio_editor.Tests
         public void Create_NoTrimCreatesCorrectArgStringWithSetBitRate()
         {
             //Arrange
-            string expected = $"-i \"INPUT.mp3\" -filter_complex \"volume=1\" -b:a 320k \"OUTPUT.mp3\"";
+            string expected = $"-y -i \"INPUT.mp3\" -filter_complex \"volume=1\" -b:a 320k \"OUTPUT.mp3\"";
             //Act
             string actual = FFmpegArgsBuilder.Create(new FFmpegOptions("INPUT.mp3", "OUTPUT.mp3", bitRate: 320));
 
@@ -52,7 +52,7 @@ namespace simple_audio_editor.Tests
         public void Create_NoTrimCreatesCorrectArgStringWithSetVolumeAndBitRate()
         {
             //Arrange
-            string expected = $"-i \"INPUT.mp3\" -filter_complex \"volume=0.5\" -b:a 320k \"OUTPUT.mp3\"";
+            string expected = $"-y -i \"INPUT.mp3\" -filter_complex \"volume=0.5\" -b:a 320k \"OUTPUT.mp3\"";
             //Act
             string actual = FFmpegArgsBuilder.Create(new FFmpegOptions("INPUT.mp3", "OUTPUT.mp3", volume: 0.5, bitRate: 320));
 
@@ -67,7 +67,7 @@ namespace simple_audio_editor.Tests
         public void Create_HasTrimCreatesCorrectArgString()
         {
             //Arrange
-            string expected = $"-i \"INPUT.mp3\" -filter_complex \"" +
+            string expected = $"-y -i \"INPUT.mp3\" -filter_complex \"" +
                               $"[0:a]atrim=start=100:end=150,volume=1,asetpts=PTS-STARTPTS[0a];" +
                               $"[0:a]atrim=start=200:end=250,volume=1,asetpts=PTS-STARTPTS[1a];" +
                               $"[0:a]atrim=start=300:end=350,volume=1,asetpts=PTS-STARTPTS[2a];" +
@@ -88,7 +88,7 @@ namespace simple_audio_editor.Tests
         public void Create_HasTrimWithNoEndValueCreatesCorrectArgString()
         {
             //Arrange
-            string expected = $"-i \"INPUT.mp3\" -filter_complex \"" +
+            string expected = $"-y -i \"INPUT.mp3\" -filter_complex \"" +
                               $"[0:a]atrim=start=100:end=150,volume=1,asetpts=PTS-STARTPTS[0a];" +
                               $"[0:a]atrim=start=200:end=250,volume=1,asetpts=PTS-STARTPTS[1a];" +
                               $"[0:a]atrim=start=300,volume=1,asetpts=PTS-STARTPTS[2a];" +
@@ -109,7 +109,7 @@ namespace simple_audio_editor.Tests
         public void Create_HasTrimCreatesCorrectArgStringWithSetVolume()
         {
             //Arrange
-            string expected = $"-i \"INPUT.mp3\" -filter_complex \"" +
+            string expected = $"-y -i \"INPUT.mp3\" -filter_complex \"" +
                               $"[0:a]atrim=start=100:end=150,volume=0.4,asetpts=PTS-STARTPTS[0a];" +
                               $"[0:a]atrim=start=200:end=250,volume=0.4,asetpts=PTS-STARTPTS[1a];" +
                               $"[0:a]atrim=start=300:end=350,volume=0.4,asetpts=PTS-STARTPTS[2a];" +
@@ -130,7 +130,7 @@ namespace simple_audio_editor.Tests
         public void Create_HasTrimCreatesCorrectArgStringWithSetBitRate()
         {
             //Arrange
-            string expected = $"-i \"INPUT.mp3\" -filter_complex \"" +
+            string expected = $"-y -i \"INPUT.mp3\" -filter_complex \"" +
                               $"[0:a]atrim=start=100:end=150,volume=1,asetpts=PTS-STARTPTS[0a];" +
                               $"[0:a]atrim=start=200:end=250,volume=1,asetpts=PTS-STARTPTS[1a];" +
                               $"[0:a]atrim=start=300:end=350,volume=1,asetpts=PTS-STARTPTS[2a];" +
@@ -151,7 +151,7 @@ namespace simple_audio_editor.Tests
         public void Create_HasTrimCreatesCorrectArgStringWithSetVolumeAndBitRate()
         {
             //Arrange
-            string expected = $"-i \"INPUT.mp3\" -filter_complex \"" +
+            string expected = $"-y -i \"INPUT.mp3\" -filter_complex \"" +
                               $"[0:a]atrim=start=100:end=150,volume=0.8,asetpts=PTS-STARTPTS[0a];" +
                               $"[0:a]atrim=start=200:end=250,volume=0.8,asetpts=PTS-STARTPTS[1a];" +
                               $"[0:a]atrim=start=300:end=350,volume=0.8,asetpts=PTS-STARTPTS[2a];" +
