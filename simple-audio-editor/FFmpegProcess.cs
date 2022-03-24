@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,22 +13,46 @@ namespace simple_audio_editor
 {
     public class FFmpegProcess
     {
-        //
         public IList<FFmpegOptions> OptionsQueue { get; private set; }
 
-        private IList<Task<(string, bool)>> _taskQueue;
+        public IList<string>
+            FinishedFiles { get; private set; } //put paths to successful conversions here? for use in GUI?
+        public IList<string>
+            FailedFiles { get; private set; } //put paths for failed conversion inputs here? for use in GUI?
+        public ObservableCollection<ConversionResult>
+            Results { get; private set; } //put paths for failed conversion inputs here? for use in GUI?
+
+        private IList<Task<ConversionResult>> _taskQueue;
+
 
         public FFmpegProcess(List<FFmpegOptions> optionsQueue)
         {
             OptionsQueue = optionsQueue;
-            _taskQueue = new List<Task<(string, bool)>>();
+            _taskQueue = new List<Task<ConversionResult>>();
+            Results = new ObservableCollection<ConversionResult>();
+            Results.CollectionChanged += (object? sender, NotifyCollectionChangedEventArgs args) =>
+            {
+#if DEBUG
+                Console.ForegroundColor = ConsoleColor.DarkCyan;
+                //Console.WriteLine($"{input} {result}");
+                if (args?.NewItems != null)
+                {
+                    foreach (var r in args.NewItems)
+                    {
+                        Console.WriteLine(r);
+                    }
+                }
+
+                Console.ResetColor();
+#endif
+            };
+
         }
-        
+
         /// <summary>
         /// Begin asynchronous conversion of FFmpegOptions stored in the queue
         /// </summary>
-        /// <returns></returns>
-        public async Task<bool> Start()
+        public async Task Start()
         {
             foreach (var option in OptionsQueue)
             {
@@ -35,25 +62,25 @@ namespace simple_audio_editor
             var total = 0;
             while (_taskQueue.Any())
             {
-                Task<(string, bool)> finishedTask = await Task.WhenAny(_taskQueue);
+                Task<ConversionResult> finishedTask = await Task.WhenAny(_taskQueue);
                 _taskQueue.Remove(finishedTask);
 
-                var (input, result) = await finishedTask;
-
-                Console.ForegroundColor = ConsoleColor.DarkCyan;
-                Console.WriteLine($"{input} {result}");
-                Console.ResetColor();
-
+                Results.Add(await finishedTask);
                 total += 1;
             }
 
             Console.WriteLine($"finished converting {total} files.");
-            return false;
         }
 
-        private (string, bool) Execute(string parameters)
+        /// <summary>
+        /// Starts the FFmpeg process with the passed arguments. <br/>
+        /// Requires FFmpeg path to be set as an environment variable.
+        /// </summary>
+        /// <param name="parameters">String containing the args to be passed to the FFmpeg process, generate from FFmpegArgsBuilder.Create()</param>
+        /// <returns>Returns a tuple containing the input path, and a bool based on success/failure</returns>
+        private ConversionResult Execute(string parameters)
         {
-            string result = String.Empty;
+            var startTime = DateTime.UtcNow;
             var exitCode = 1;
 
             using (Process p = new Process())
@@ -82,16 +109,22 @@ namespace simple_audio_editor
                 exitCode = p.ExitCode;
             }
 
-            var start = parameters.IndexOf("-i ") + 3;
-            var input = parameters.Substring(start, parameters.IndexOf("-filter") - start);
+            var inputStartIndex = CultureInfo.InvariantCulture.CompareInfo.IndexOf(parameters, "-i ") + 3;
+            var input = parameters.Substring(inputStartIndex, CultureInfo.InvariantCulture.CompareInfo.IndexOf(parameters, "-filter") - inputStartIndex);
 
-            if (exitCode == 0)
+            var outputStartIndex = CultureInfo.InvariantCulture.CompareInfo.IndexOf(parameters, "[outa] ") + 7;
+            var output = parameters.Substring(outputStartIndex, CultureInfo.InvariantCulture.CompareInfo.LastIndexOf(parameters,"\"") - outputStartIndex + 1);
+            
+
+            if (exitCode == 0) //apparently ffmpeg will sometimes return 0 even if there is an error. 
             {
-                return (input,true);
+                return new ConversionResult() { Input = input, Output = output, Succeeded = true, StartTime = startTime, EndTime = DateTime.UtcNow };
+               // return (input, true);
             }
             else
             {
-                return (input, false);
+                return new ConversionResult() { Input = input, Output = output, Succeeded = false, StartTime = startTime, EndTime = DateTime.UtcNow };
+               // return (input, false);
             }
         }
 
@@ -107,6 +140,27 @@ namespace simple_audio_editor
             //add to queue list
 
             //pass through to argsbuilder.create and add to a list of strings?
+        }
+    }
+
+
+    public record ConversionResult()
+    {
+        public string Input;
+        public string Output;
+        public bool Succeeded;
+        public DateTime StartTime;
+        public DateTime EndTime;
+
+        public override string ToString()
+        {
+            var result = Succeeded ? "Finished" : "Failed";
+
+            return $"Status: {result}\n" +
+                   $"Input: {Input}\n" +
+                   $"Output: {Output}\n" +
+                   $"Start Time: {StartTime.ToLocalTime().ToString("dd/MM/yyyy hh:mm:ss.fff tt \"GMT\"zzz", CultureInfo.InvariantCulture)}\n" +
+                   $"End Time: {EndTime.ToLocalTime().ToString("dd/MM/yyyy hh:mm:ss.fff tt \"GMT\"zzz", CultureInfo.InvariantCulture)}\n";
         }
     }
 }
