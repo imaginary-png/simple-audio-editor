@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 
 namespace simple_audio_editor
 {
@@ -13,8 +14,14 @@ namespace simple_audio_editor
 
         //begin conversion of each item in the queue.
         //call the  argsbuilder first? or do that elsewhere? A list of args from addtoqueue?
+        public bool Start()
+        {
 
-        private bool Start(string exePath, string parameters)
+
+            return false;
+        }
+
+        private bool Execute(string parameters)
         {
             string result = String.Empty;
             var exitCode = 1;
@@ -30,7 +37,7 @@ namespace simple_audio_editor
                 p.ErrorDataReceived += (sender, args) => Console.WriteLine("received output: {0}", args.Data);
                 p.OutputDataReceived += (sender, args) => Console.WriteLine("received output: {0}", args.Data);*/
 
-                p.StartInfo.FileName = exePath;
+                p.StartInfo.FileName = "ffmpeg.exe";
                 p.StartInfo.Arguments = parameters;
                 p.Start();
 
@@ -53,6 +60,7 @@ namespace simple_audio_editor
             }
         }
 
+        //helpers
 
         //add a item to queue
         public void AddToQueue()
@@ -60,8 +68,16 @@ namespace simple_audio_editor
             //add to queue list
 
             //pass through to argsbuilder.create and add to a list of strings?
-
         }
+
+        bool CheckFFmpegPath(string path)
+        {
+            if (File.Exists(path)) return true;
+
+
+            return false;
+        }
+
 
     }
 }

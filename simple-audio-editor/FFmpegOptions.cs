@@ -35,18 +35,6 @@ namespace simple_audio_editor
             set => _output = value;
         }
 
-        private string _ffmpegPath;
-        public string FFmpegPath
-        {
-            get => _ffmpegPath;
-            set
-            {
-                if (File.Exists(value))
-                {
-                    _ffmpegPath = value;
-                }
-            }
-        }
 
         private double _volume;
         public double Volume
@@ -104,7 +92,6 @@ namespace simple_audio_editor
 
         public bool InputFlag = false;
         public bool OutputFlag = false;
-        public bool FFmpegFlag = false;
         public bool VolumeFlag = false;
         public bool BitRateFlag = false;
         public bool TrimFlag = false; //flags for checking if options selected, used for forming arguments to pass.
@@ -135,16 +122,13 @@ namespace simple_audio_editor
             Console.WriteLine($"-------------------------------\n{_arguments}\n-------------------------------");
         }*/
 
-        public FFmpegOptions(string input, string output, string ffmpegPath, double volume = 1.0, int bitRate = DefaultBitRate)
+        public FFmpegOptions(string input, string output, double volume = 1.0, int bitRate = DefaultBitRate)
         {
             _input = input;
             InputFlag = true;
 
             _output = output;
             OutputFlag = true;
-
-            _ffmpegPath = ffmpegPath;
-            FFmpegFlag = true;
 
             _volume = volume;
             VolumeFlag = true;
@@ -153,16 +137,13 @@ namespace simple_audio_editor
             BitRateFlag = true;
         }
 
-        public FFmpegOptions(string input, string output, string ffmpegPath, List<int> trimStart, List<int> trimEnd, double volume = 1.0, int bitRate = DefaultBitRate)
+        public FFmpegOptions(string input, string output, List<int> trimStart, List<int> trimEnd, double volume = 1.0, int bitRate = DefaultBitRate)
         {
             _input = input;
             InputFlag = true;
 
             _output = output;
             OutputFlag = true;
-
-            _ffmpegPath = ffmpegPath;
-            FFmpegFlag = true;
 
             _volume = volume;
             VolumeFlag = true;
