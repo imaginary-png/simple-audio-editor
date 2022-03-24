@@ -10,8 +10,14 @@ namespace simple_audio_editor
     /// </summary>
     public class FFmpegOptions
     {
+        const int DefaultBitRate = 128;
+
         // test inputs
         private string _input;
+        //  I SHOULD REMOVE THE ARG STRINGS AND FORMULATE THEM IN THE PROCESS CLASS BASED ON THE FLAGS / INPUTS IN THE OPTIONS
+        //  BECAUSE THE OPTIONS SHOULD ONLY CONTAIN THE OPTIONS SELECTED BY THE USER
+        // THIS WAY I CAN FORM THE ARGS TO BE PASSED TO FFMPEG IN ONE METHOD, IN THE PROCESS CLASS.
+        //  WHICH SHOULD MAKE IT MUCH EASIER TO UPDATE IN THE FUTURE FOR MORE FUNCTIONALITY.
 
         /// <summary>
         /// The path for the Input file. If the Path does not exist, the current input path will remain unchanged.
@@ -19,36 +25,14 @@ namespace simple_audio_editor
         public string Input
         {
             get => _input;
-            set
-            {
-                if (File.Exists(value))
-                {
-                    _input = value;
-                    Console.WriteLine("file exists");
-                }
-                else
-                {
-                    Console.WriteLine("File not found.");
-                }
-            }
+            set => _input = value; //not going to check File.Exists, leave that up to user / ffmpeg.
         }
 
         private string _output;
         public string Output
         {
             get => _output;
-            set
-            {
-                if (File.Exists(value))
-                {
-                    _output = value;
-                    Console.WriteLine("file exists");
-                }
-                else
-                {
-                    Console.WriteLine("File not found.");
-                }
-            }
+            set => _output = value;
         }
 
         private string _ffmpegPath;
@@ -89,15 +73,25 @@ namespace simple_audio_editor
                 }
                 else
                 {
-                    _bitRate = 128;
-                    _bitRateArg = $" -b:a {_bitRate}k";
+                    //throw error
                 }
             }
         }
 
 
         private IList<int> _trimStart = new List<int>() { 600, 1800, 3180 };
+        public IList<int> TrimStart
+        {
+            get => _trimStart;
+            private set => _trimStart = value;
+        }
+
         private IList<int> _trimEnd = new List<int>() { 660, 1860, 0 };
+        public IList<int> TrimEnd
+        {
+            get => _trimEnd;
+            private set => _trimEnd = value;
+        }
 
         private string _trimArg;
         private string _volumeArg;
@@ -108,13 +102,20 @@ namespace simple_audio_editor
 
         private string _arguments;
 
+        public bool InputFlag = false;
+        public bool OutputFlag = false;
+        public bool FFmpegFlag = false;
+        public bool VolumeFlag = false;
+        public bool BitRateFlag = false;
+        public bool TrimFlag = false; //flags for checking if options selected, used for forming arguments to pass.
+
         /// <summary>
         /// Used to set arguments for the FFmpeg command-line. You need to set a valid input and output path, and your ffmpeg.exe path. <br/>
         /// Defaults: Input, Output, FFmpegPath = "". Volume = 1.0. Bit Rate = 128.
         /// </summary>
-        public FFmpegOptions()
+        public FFmpegOptions() //remove
         {
-            Input = "C:\\PROGRAMMING STUFF\\C#\\simple-audio-editor\\test1.mp3";
+            Input = "C:\\PROGRAMMING STUFF\\C#\\simple-audio-editor\\test.mp3";
             Output = "C:\\PROGRAMMING STUFF\\C#\\simple-audio-editor\\OUTPUT.mp3";
             FFmpegPath = "C:\\ffmpeg\\bin\\ffmpeg.exe";
 
@@ -134,74 +135,71 @@ namespace simple_audio_editor
             Console.WriteLine($"-------------------------------\n{_arguments}\n-------------------------------");
         }
 
-
-
-
-
-
-
-
-
-
-        #region old unused , probably delete later
-
-        
-
-        
-        private bool SetInput(string input)
+        public FFmpegOptions(string input, string output, string ffmpegPath, double volume = 1.0, int bitRate = DefaultBitRate)
         {
-            if (File.Exists(input))
+            _input = input;
+            InputFlag = true;
+
+            _output = output;
+            OutputFlag = true;
+
+            _ffmpegPath = ffmpegPath;
+            FFmpegFlag = true;
+
+            _volume = volume;
+            VolumeFlag = true;
+
+            _bitRate = bitRate;
+            BitRateFlag = true;
+        }
+
+        public FFmpegOptions(string input, string output, string ffmpegPath, List<int> trimStart, List<int> trimEnd, double volume = 1.0, int bitRate = DefaultBitRate)
+        {
+            _input = input;
+            InputFlag = true;
+
+            _output = output;
+            OutputFlag = true;
+
+            _ffmpegPath = ffmpegPath;
+            FFmpegFlag = true;
+
+            _volume = volume;
+            VolumeFlag = true;
+
+            _bitRate = bitRate;
+            BitRateFlag = true;
+
+            if (trimStart.Count == trimEnd.Count)
             {
-                _input = input;
-                Console.WriteLine("file exists");
-                return true;
-            }
-            else
-            {
-                Console.WriteLine("File not found.");
-                _input = "";
-                return false;
+                _trimStart = trimStart;
+                _trimEnd = trimEnd;
+                TrimFlag = true;
             }
         }
 
-        private bool SetOutput(string output)
+
+        public void AddTrimSection(int start, int end = 0)
         {
-            if (File.Exists(output))
-            {
-                _output = output;
-                Console.WriteLine("file exists");
-                return true;
-            }
-            else
-            {
-                Console.WriteLine("File not found.");
-                _output = "";
-                return false;
-            }
+            TrimStart.Add(start);
+            TrimEnd.Add(end);
+            TrimFlag = true;
         }
 
-        private bool SetFFmpegPath(string path)
+        /// <summary>
+        /// Trim a section of the audio and keep that subsection. <br/>
+        /// e.g. TrimSection(30,90) would save a one minute clip from 30s to 90s. <br/>
+        /// Multiple subsections can be chosen for the output file. <br/>
+        /// Leaving out the end param will save the section from the start param to end of file. <br/>
+        /// Maybe this should be called Clip or SaveSection or something, but the ffmpeg audio filter is called atrim.
+        /// </summary>
+        /// <param name="startTimeInSeconds">Save section from: (seconds)</param>
+        /// <param name="endTimeInSeconds">Save section to: (seconds)<br/>Default: 0</param>
+        public void TrimSection(int startTimeInSeconds, int endTimeInSeconds = 0)
         {
-            if (File.Exists(path))
-            {
-                _ffmpegPath = path;
-                return true;
-            }
-
-            return false;
 
         }
 
 
-        private void SetBitRate(int bitRate)
-        {
-            if (bitRate is > 24 and < 320)
-            {
-                _bitRateArg += "-b:a " + bitRate + "k";
-            }
-
-        }
-
-        #endregion
     }
 }

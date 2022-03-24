@@ -40,6 +40,7 @@ namespace simple_audio_editor
             
             var opt = new FFmpegOptions();
             opt.Input = "Fdfs";
+            opt.TrimSection(50);
 
         }
 
