@@ -50,9 +50,9 @@ namespace simple_audio_editor
             var concatArg = "";
             var count = 0;
 
-            for (; count < options.TrimStart.Count; count++)
+            for (; count < options.TrimTimes.Count; count++)
             {
-                trimArg += TrimSection(count, options.TrimStart[count], options.TrimEnd[count], options.Volume);
+                trimArg += TrimSection(count, options.TrimTimes[count].Start, options.TrimTimes[count].End, options.Volume);
                 concatArg += $"[{count}a]";
             }
 

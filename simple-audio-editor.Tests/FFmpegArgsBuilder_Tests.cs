@@ -61,7 +61,7 @@ namespace simple_audio_editor.Tests
         }
         #endregion
 
-        #region Has Trim Tests
+        #region Trim Tests
 
         [Fact]
         public void Create_HasTrimCreatesCorrectArgString()
@@ -75,9 +75,13 @@ namespace simple_audio_editor.Tests
                               $"\" -b:a 128k -map [outa] \"OUTPUT.mp3\"";
 
             //Act
-            var trimStart = new List<int>() { 100, 200, 300 };
-            var trimEnd = new List<int>() { 150, 250, 350 };
-            var options = new FFmpegOptions("INPUT.mp3", "OUTPUT.mp3", trimStart, trimEnd);
+            var trimTimes = new List<TrimTime>()
+            {
+                new TrimTime(100, 150),
+                new TrimTime(200,250),
+                new TrimTime(300,350)
+            };
+            var options = new FFmpegOptions("INPUT.mp3", "OUTPUT.mp3", trimTimes);
             string actual = FFmpegArgsBuilder.Create(options);
 
             //Assert
@@ -96,9 +100,13 @@ namespace simple_audio_editor.Tests
                               $"\" -b:a 128k -map [outa] \"OUTPUT.mp3\"";
 
             //Act
-            var trimStart = new List<int>() { 100, 200, 300 };
-            var trimEnd = new List<int>() { 150, 250, 0 };
-            var options = new FFmpegOptions("INPUT.mp3", "OUTPUT.mp3", trimStart, trimEnd);
+            var trimTimes = new List<TrimTime>()
+            {
+                new TrimTime(100, 150),
+                new TrimTime(200,250),
+                new TrimTime(300)
+            };
+            var options = new FFmpegOptions("INPUT.mp3", "OUTPUT.mp3", trimTimes);
             string actual = FFmpegArgsBuilder.Create(options);
 
             //Assert
@@ -117,15 +125,19 @@ namespace simple_audio_editor.Tests
                               $"\" -b:a 128k -map [outa] \"OUTPUT.mp3\"";
 
             //Act
-            var trimStart = new List<int>() { 100, 200, 300 };
-            var trimEnd = new List<int>() { 150, 250, 350 };
-            var options = new FFmpegOptions("INPUT.mp3", "OUTPUT.mp3", trimStart, trimEnd,0.4);
+            var trimTimes = new List<TrimTime>()
+            {
+                new TrimTime(100, 150),
+                new TrimTime(200,250),
+                new TrimTime(300,350)
+            };
+            var options = new FFmpegOptions("INPUT.mp3", "OUTPUT.mp3", trimTimes, 0.4);
             string actual = FFmpegArgsBuilder.Create(options);
 
             //Assert
             Assert.Equal(expected, actual);
         }
-        
+
         [Fact]
         public void Create_HasTrimCreatesCorrectArgStringWithSetBitRate()
         {
@@ -138,15 +150,19 @@ namespace simple_audio_editor.Tests
                               $"\" -b:a 180k -map [outa] \"OUTPUT.mp3\"";
 
             //Act
-            var trimStart = new List<int>() { 100, 200, 300 };
-            var trimEnd = new List<int>() { 150, 250, 350 };
-            var options = new FFmpegOptions("INPUT.mp3", "OUTPUT.mp3", trimStart, trimEnd, bitRate:180);
+            var trimTimes = new List<TrimTime>()
+            {
+                new TrimTime(100, 150),
+                new TrimTime(200,250),
+                new TrimTime(300,350)
+            };
+            var options = new FFmpegOptions("INPUT.mp3", "OUTPUT.mp3", trimTimes, bitRate: 180);
             string actual = FFmpegArgsBuilder.Create(options);
 
             //Assert
             Assert.Equal(expected, actual);
         }
-        
+
         [Fact]
         public void Create_HasTrimCreatesCorrectArgStringWithSetVolumeAndBitRate()
         {
@@ -159,9 +175,13 @@ namespace simple_audio_editor.Tests
                               $"\" -b:a 180k -map [outa] \"OUTPUT.mp3\"";
 
             //Act
-            var trimStart = new List<int>() { 100, 200, 300 };
-            var trimEnd = new List<int>() { 150, 250, 350 };
-            var options = new FFmpegOptions("INPUT.mp3", "OUTPUT.mp3", trimStart, trimEnd, 0.8, 180);
+            var trimTimes = new List<TrimTime>()
+            {
+                new TrimTime(100, 150),
+                new TrimTime(200,250),
+                new TrimTime(300,350)
+            };
+            var options = new FFmpegOptions("INPUT.mp3", "OUTPUT.mp3", trimTimes, 0.8, 180);
             string actual = FFmpegArgsBuilder.Create(options);
 
             //Assert

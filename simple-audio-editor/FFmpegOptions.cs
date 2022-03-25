@@ -12,37 +12,12 @@ namespace simple_audio_editor
     {
         const int DefaultBitRate = 128;
 
-        // test inputs
-        private string _input;
-
         /// <summary>
         /// The path for the Input file. If the Path does not exist, the current input path will remain unchanged.
         /// </summary>
-        public string Input
-        {
-            get => _input;
-            set => _input = value; //not going to check File.Exists, leave that up to user / ffmpeg.
-        }
-
-        private string _output;
-        public string Output
-        {
-            get => _output;
-            set => _output = value;
-        }
-
-
-        private double _volume;
-        public double Volume
-        {
-            get => _volume;
-            set
-            {
-                _volume = value;
-                _volumeArg = $" \"volume={value}\"";
-                //_volumeArg = $"-filter:a \"volume={value}\"";
-            }
-        } //decimal places and negative numbers don't seem to matter, just makes things quieter. 100 = super  loud. 1 = 100% volume(normal), 1.5 = 150%, 0.5 = 50%
+        public string Input { get; set; } //not going to verify file exists, let user handle
+        public string Output { get; set; }
+        public double Volume { get; set; } //decimal places and negative numbers don't seem to matter, just makes things quieter. 100 = super  loud. 1 = 100% volume(normal), 1.5 = 150%, 0.5 = 50%
 
         private int _bitRate;
         public int BitRate
@@ -53,44 +28,22 @@ namespace simple_audio_editor
                 if (value is > 24 and < 400)
                 {
                     _bitRate = value;
-                    _bitRateArg = $" -b:a {_bitRate}k";
                 }
                 else
                 {
-                    //throw error
+                    //throw error?
                 }
             }
         }
 
+        public IList<TrimTime> TrimTimes { get; private set; }
 
-        private IList<int> _trimStart = new List<int>() { 600, 1800, 3180 };
-        public IList<int> TrimStart
-        {
-            get => _trimStart;
-            private set => _trimStart = value;
-        }
-
-        private IList<int> _trimEnd = new List<int>() { 660, 1860, 0 };
-        public IList<int> TrimEnd
-        {
-            get => _trimEnd;
-            private set => _trimEnd = value;
-        }
-
-        private string _trimArg;
-        private string _volumeArg;
-        private string _bitRateArg;
-        private string _beginningArg;
-        private string _trimMapOutArg;
-        private string _endArg;
-
-        private string _arguments;
-
-        public bool InputFlag = false;
+        //unnecessary flags - prob remove. or might use in future functionality?
+        public bool InputFlag = false; 
         public bool OutputFlag = false;
         public bool VolumeFlag = false;
         public bool BitRateFlag = false;
-        public bool TrimFlag = false; //flags for checking if options selected, used for forming arguments to pass.
+        public bool TrimFlag = false; //trim flag is used in argsbuilder.
 
         /// <summary>
         /// Used to set arguments for the FFmpeg command-line. You need to set a valid input and output path, and your ffmpeg.exe path. <br/>
@@ -98,48 +51,49 @@ namespace simple_audio_editor
         /// </summary>
         public FFmpegOptions(string input, string output, double volume = 1.0, int bitRate = DefaultBitRate)
         {
-            _input = input;
+            Input = input;
             InputFlag = true;
 
-            _output = output;
+            Output = output;
             OutputFlag = true;
 
-            _volume = volume;
-            VolumeFlag = true;
-
-            _bitRate = bitRate;
-            BitRateFlag = true;
-        }
-
-        public FFmpegOptions(string input, string output, List<int> trimStart, List<int> trimEnd, double volume = 1.0, int bitRate = DefaultBitRate)
-        {
-            _input = input;
-            InputFlag = true;
-
-            _output = output;
-            OutputFlag = true;
-
-            _volume = volume;
+            Volume = volume;
             VolumeFlag = true;
 
             _bitRate = bitRate;
             BitRateFlag = true;
 
-            if (trimStart.Count == trimEnd.Count)
-            {
-                _trimStart = trimStart;
-                _trimEnd = trimEnd;
-                TrimFlag = true;
-            }
+            TrimTimes = new List<TrimTime>();
         }
 
-
-        public void AddTrimSection(int start, int end = 0)
+        public FFmpegOptions(string input, string output, IList<TrimTime> trimTimes, double volume = 1.0, int bitRate = DefaultBitRate) :
+            this(input, output, volume, bitRate)
         {
-            TrimStart.Add(start);
-            TrimEnd.Add(end);
+            TrimTimes = trimTimes;
             TrimFlag = true;
         }
 
+        public void AddTrimSection(int start, int end = 0)
+        {
+            TrimTimes.Add(new TrimTime() { Start = start, End = end });
+            TrimFlag = true;
+        }
+    }
+
+    public struct TrimTime
+    {
+        public int Start;
+        public int End;
+
+        public TrimTime(int start, int end = 0)
+        {
+            Start = start;
+            End = end;
+        }
+
+        public override string ToString()
+        {
+            return Start + " " + End;
+        }
     }
 }

@@ -157,8 +157,8 @@ namespace simple_audio_editor
             var result = Succeeded ? "Finished" : "Failed";
 
             return $"Status: {result}\n" +
-                   $"Input: {Input}\n" +
-                   $"Output: {Output}\n" +
+                   $"Input Path: {Input}\n" +
+                   $"Output Path: {Output}\n" +
                    $"Start Time: {StartTime.ToLocalTime().ToString("dd/MM/yyyy hh:mm:ss.fff tt \"GMT\"zzz", CultureInfo.InvariantCulture)}\n" +
                    $"End Time: {EndTime.ToLocalTime().ToString("dd/MM/yyyy hh:mm:ss.fff tt \"GMT\"zzz", CultureInfo.InvariantCulture)}\n";
         }
