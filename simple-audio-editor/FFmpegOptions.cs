@@ -14,10 +14,6 @@ namespace simple_audio_editor
 
         // test inputs
         private string _input;
-        //  I SHOULD REMOVE THE ARG STRINGS AND FORMULATE THEM IN THE PROCESS CLASS BASED ON THE FLAGS / INPUTS IN THE OPTIONS
-        //  BECAUSE THE OPTIONS SHOULD ONLY CONTAIN THE OPTIONS SELECTED BY THE USER
-        // THIS WAY I CAN FORM THE ARGS TO BE PASSED TO FFMPEG IN ONE METHOD, IN THE PROCESS CLASS.
-        //  WHICH SHOULD MAKE IT MUCH EASIER TO UPDATE IN THE FUTURE FOR MORE FUNCTIONALITY.
 
         /// <summary>
         /// The path for the Input file. If the Path does not exist, the current input path will remain unchanged.
@@ -46,7 +42,7 @@ namespace simple_audio_editor
                 _volumeArg = $" \"volume={value}\"";
                 //_volumeArg = $"-filter:a \"volume={value}\"";
             }
-        } //decimal places and negative numbers don't seem to matter, just makes things quieter. 100 = super damn loud. 1 = 100% volume(normal), 1.5 = 150%, 0.5 = 50%
+        } //decimal places and negative numbers don't seem to matter, just makes things quieter. 100 = super  loud. 1 = 100% volume(normal), 1.5 = 150%, 0.5 = 50%
 
         private int _bitRate;
         public int BitRate
