@@ -4,6 +4,8 @@ namespace simple_audio_editor.Tests
 {
     public class FFmpegOptions_Tests
     {
+        #region Adding Trim Tests
+        
         [Fact]
         public void AddTrimSection_AddingTrimAddsToStartAndEndTrimList()
         {
@@ -75,5 +77,52 @@ namespace simple_audio_editor.Tests
             //Assert
             Assert.Equal(expected, actual);
         }
+
+        #endregion
+
+        #region Removing Trim Tests
+
+        [Fact]
+        public void RemoveTrimSection_RemovingExistingTrimAsStartEndInts_ReturnsTrue()
+        {
+            //Arrange
+
+            //Act
+
+            //Assert
+
+        }
+
+        [Fact]
+        public void RemoveTrimSection_RemovingExistingTrimAsTrimTim_ReturnsTrue()
+        {
+            //Arrange
+
+            //Act
+
+            //Assert
+        }
+
+        [Fact]
+        public void RemoveTrimSection_RemovingNonExistingTrimAsStartEndInts_ReturnsFalse()
+        {
+            //Arrange
+
+            //Act
+
+            //Assert
+        }
+        [Fact]
+        public void RemoveTrimSection_RemovingNonExistingTrimAsTrimTime_ReturnsFalse()
+        {
+            //Arrange
+
+            //Act
+
+            //Assert
+        }
+
+
+        #endregion
     }
 }

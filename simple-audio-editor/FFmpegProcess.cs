@@ -141,6 +141,11 @@ namespace simple_audio_editor
 
             //pass through to argsbuilder.create and add to a list of strings?
         }
+
+        public void RemoveFromQueue(FFmpegOptions option)
+        {
+            //todo
+        }
     }
 
 

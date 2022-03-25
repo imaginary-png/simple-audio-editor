@@ -46,9 +46,13 @@ namespace simple_audio_editor
         public bool TrimFlag = false; //trim flag is used in argsbuilder.
 
         /// <summary>
-        /// Used to set arguments for the FFmpeg command-line. You need to set a valid input and output path, and your ffmpeg.exe path. <br/>
-        /// Defaults: Input, Output, FFmpegPath = "". Volume = 1.0. Bit Rate = 128.
+        /// Used to set arguments for the FFmpeg command-line. <br/>
+        /// Defaults: Volume = 1.0. Bit Rate = 128.
         /// </summary>
+        /// <param name="input">Input file path</param>
+        /// <param name="output">Output path, creates new file and folders as necessary</param>
+        /// <param name="volume">Output Volume, 1 = 100%, 0.5 = 50% of current volume. Default: 1.0</param>
+        /// <param name="bitRate">Output bitrate. Default: 128</param>
         public FFmpegOptions(string input, string output, double volume = 1.0, int bitRate = DefaultBitRate)
         {
             Input = input;
@@ -66,6 +70,15 @@ namespace simple_audio_editor
             TrimTimes = new List<TrimTime>();
         }
 
+        /// <summary>
+        /// Used to set arguments for the FFmpeg command-line. <br/>
+        /// Defaults: Volume = 1.0. Bit Rate = 128.
+        /// </summary>
+        /// <param name="input">Input file path</param>
+        /// <param name="output">Output path, creates new file and folders as necessary</param>
+        /// <param name="trimTimes">List of trim times for getting subsections of audio to stitch together into the output file</param>
+        /// <param name="volume">Output Volume, 1 = 100%, 0.5 = 50% of current volume. Default: 1.0</param>
+        /// <param name="bitRate">Output bitrate. Default: 128</param>
         public FFmpegOptions(string input, string output, IList<TrimTime> trimTimes, double volume = 1.0, int bitRate = DefaultBitRate) :
             this(input, output, volume, bitRate)
         {
@@ -73,10 +86,28 @@ namespace simple_audio_editor
             TrimFlag = true;
         }
 
+        /// <summary>
+        /// Specifies the start and end time of a subsection to save. Negative numbers result in start as 0 seconds.
+        /// </summary>
+        /// <param name="start">Start Time</param>
+        /// <param name="end">End Time</param>
         public void AddTrimSection(int start, int end = 0)
         {
+            //bother verifying start is positive? negative values are valid args for ffmpeg and result as if start was 0 seconds.
             TrimTimes.Add(new TrimTime() { Start = start, End = end });
             TrimFlag = true;
+        }
+
+        public bool RemoveTrimSection(int start, int end)
+        {
+            //todo
+            return false;
+        }
+
+        public bool RemoveTrimSection(TrimTime trimTime)
+        {
+            //todo
+            return true;
         }
     }
 
