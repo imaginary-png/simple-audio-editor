@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Net.Sockets;
 
 namespace simple_audio_editor
 {
@@ -8,7 +10,7 @@ namespace simple_audio_editor
     /// Used to set arguments for the FFmpeg command-line. You need to set a valid input and output path, and your ffmpeg.exe path.
     /// Currently handles audio - volume, bit rate, and trimming;
     /// </summary>
-    public class FFmpegOptions
+    public class FFmpegOptions : IEquatable<FFmpegOptions>
     {
         const int DefaultBitRate = 128;
 
@@ -39,7 +41,7 @@ namespace simple_audio_editor
         public IList<TrimTime> TrimTimes { get; private set; }
 
         //unnecessary flags - prob remove. or might use in future functionality?
-        public bool InputFlag = false; 
+        public bool InputFlag = false;
         public bool OutputFlag = false;
         public bool VolumeFlag = false;
         public bool BitRateFlag = false;
@@ -86,6 +88,8 @@ namespace simple_audio_editor
             TrimFlag = true;
         }
 
+        #region Trim Functions
+
         /// <summary>
         /// Specifies the start and end time of a subsection to save. Negative numbers result in start as 0 seconds.
         /// </summary>
@@ -100,15 +104,49 @@ namespace simple_audio_editor
 
         public bool RemoveTrimSection(int start, int end)
         {
-            //todo
-            return false;
+            return RemoveTrimSection(new TrimTime(start, end));
         }
 
+        //is this needed? don't think so.
         public bool RemoveTrimSection(TrimTime trimTime)
         {
-            //todo
-            return true;
+            return TrimTimes.Remove(trimTime);
         }
+        #endregion
+
+        #region Equality 
+
+        public override bool Equals(object? obj) 
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((FFmpegOptions)obj);
+        }
+
+        public bool Equals(FFmpegOptions other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return _bitRate == other._bitRate && Input == other.Input && Output == other.Output && Volume.Equals(other.Volume) && Equals(TrimTimes, other.TrimTimes);
+        }
+
+        public static bool operator ==(FFmpegOptions obj1, FFmpegOptions obj2)
+        {
+            if (ReferenceEquals(obj1, obj2)) return true;
+            if (ReferenceEquals(obj1, null)) return false;
+            if (ReferenceEquals(obj2, null)) return false;
+            return obj1.Equals(obj2);
+        }
+
+        public static bool operator !=(FFmpegOptions obj1, FFmpegOptions obj2) => !(obj1 == obj2);
+        
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(_bitRate, Input, Output, Volume, TrimTimes);
+        }
+
+        #endregion
     }
 
     public struct TrimTime
