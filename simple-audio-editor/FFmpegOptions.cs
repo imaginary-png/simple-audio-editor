@@ -98,7 +98,7 @@ namespace simple_audio_editor
         public void AddTrimSection(int start, int end = 0)
         {
             //bother verifying start is positive? negative values are valid args for ffmpeg and result as if start was 0 seconds.
-            TrimTimes.Add(new TrimTime() { Start = start, End = end });
+            TrimTimes.Add(new TrimTime(start,end));
             TrimFlag = true;
         }
 
@@ -149,10 +149,10 @@ namespace simple_audio_editor
         #endregion
     }
 
-    public struct TrimTime
+    public readonly struct TrimTime
     {
-        public int Start;
-        public int End;
+        public readonly int Start;
+        public readonly int End;
 
         public TrimTime(int start, int end = 0)
         {

@@ -5,7 +5,7 @@ namespace simple_audio_editor.Tests
     public class FFmpegOptions_Tests
     {
         #region Adding Trim Tests
-        
+
         [Fact]
         public void AddTrimSection_AddingTrimAddsToStartAndEndTrimList()
         {
@@ -17,8 +17,8 @@ namespace simple_audio_editor.Tests
 
             //Act
             options.AddTrimSection(expectedStartTime, expectedEndTime);
-          /*  var actualStartCount = options.TrimStart.Count;
-            var actuaEndCount = options.TrimEnd.Count;*/
+            /*  var actualStartCount = options.TrimStart.Count;
+              var actuaEndCount = options.TrimEnd.Count;*/
 
             var actualTrimTimeCount = options.TrimTimes.Count;
 
@@ -82,47 +82,90 @@ namespace simple_audio_editor.Tests
 
         #region Removing Trim Tests
 
-        [Fact]
-        public void RemoveTrimSection_RemovingExistingTrimAsStartEndInts_ReturnsTrue()
+        [Theory]
+        [InlineData(5, 10)]
+        [InlineData(60)]
+        [InlineData(560, 420)]
+        [InlineData(25, 333)]
+        public void RemoveTrimSection_RemovingExistingTrimAsStartEndInts_ReturnsTrue(int start, int end = 0)
         {
             //Arrange
+            var expected = 0;
+            var opt = new FFmpegOptions("", "");
+
+            if (end == 0) opt.AddTrimSection(start);
+            else opt.AddTrimSection(start, end);
 
             //Act
+            var boolResult = opt.RemoveTrimSection(start, end);
+            var actual = opt.TrimTimes.Count;
 
             //Assert
+            Assert.Equal(expected, actual);
+            Assert.True(boolResult);
 
         }
 
-        [Fact]
-        public void RemoveTrimSection_RemovingExistingTrimAsTrimTim_ReturnsTrue()
+        [Theory]
+        [InlineData(5, 10)]
+        [InlineData(60)]
+        [InlineData(560, 420)]
+        [InlineData(25, 333)]
+        public void RemoveTrimSection_RemovingExistingTrimAsTrimTime_ReturnsTrue(int start, int end = 0)
         {
             //Arrange
+            var expected = 0;
+            var opt = new FFmpegOptions("", "");
+
+            if (end == 0) opt.AddTrimSection(start);
+            else opt.AddTrimSection(start, end);
 
             //Act
+            var toRemove = end == 0 ? new TrimTime(start) : new TrimTime(start, end);
+            var boolResult = opt.RemoveTrimSection(toRemove);
+            var actual = opt.TrimTimes.Count;
 
             //Assert
+            Assert.Equal(expected, actual);
+            Assert.True(boolResult);
         }
 
         [Fact]
         public void RemoveTrimSection_RemovingNonExistingTrimAsStartEndInts_ReturnsFalse()
         {
             //Arrange
+            var opt = new FFmpegOptions("", "");
+            var expected = 1;
+            opt.AddTrimSection(12, 88);
 
             //Act
+            var boolResult = opt.RemoveTrimSection(5, 50);
+            var actual = opt.TrimTimes.Count;
 
             //Assert
+            Assert.Equal(expected, actual);
+            Assert.False(boolResult);
         }
+
         [Fact]
         public void RemoveTrimSection_RemovingNonExistingTrimAsTrimTime_ReturnsFalse()
         {
+
             //Arrange
+            var opt = new FFmpegOptions("", "");
+            var expected = 1;
+            opt.AddTrimSection(12, 88);
 
             //Act
+            var boolResult = opt.RemoveTrimSection(new TrimTime(5, 50));
+            var actual = opt.TrimTimes.Count;
 
             //Assert
+            Assert.Equal(expected, actual);
+            Assert.False(boolResult);
+
+
+            #endregion
         }
-
-
-        #endregion
     }
 }
