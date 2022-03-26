@@ -107,7 +107,7 @@ namespace simple_audio_editor
             return RemoveTrimSection(new TrimTime(start, end));
         }
 
-        //is this needed? don't think so.
+        
         public bool RemoveTrimSection(TrimTime trimTime)
         {
             return TrimTimes.Remove(trimTime);

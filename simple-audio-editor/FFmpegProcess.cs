@@ -16,11 +16,14 @@ namespace simple_audio_editor
         public IList<FFmpegOptions> OptionsQueue { get; private set; }
 
         public IList<string>
-            FinishedFiles { get; private set; } //put paths to successful conversions here? for use in GUI?
+            FinishedFiles
+        { get; private set; } //put paths to successful conversions here? for use in GUI?
         public IList<string>
-            FailedFiles { get; private set; } //put paths for failed conversion inputs here? for use in GUI?
+            FailedFiles
+        { get; private set; } //put paths for failed conversion inputs here? for use in GUI?
         public ObservableCollection<ConversionResult>
-            Results { get; private set; } //put paths for failed conversion inputs here? for use in GUI?
+            Results
+        { get; private set; } //put paths for failed conversion inputs here? for use in GUI?
 
         private IList<Task<ConversionResult>> _taskQueue;
 
@@ -113,22 +116,24 @@ namespace simple_audio_editor
             var input = parameters.Substring(inputStartIndex, CultureInfo.InvariantCulture.CompareInfo.IndexOf(parameters, "-filter") - inputStartIndex);
 
             var outputStartIndex = CultureInfo.InvariantCulture.CompareInfo.IndexOf(parameters, "[outa] ") + 7;
-            var output = parameters.Substring(outputStartIndex, CultureInfo.InvariantCulture.CompareInfo.LastIndexOf(parameters,"\"") - outputStartIndex + 1);
-            
+            var output = parameters.Substring(outputStartIndex, CultureInfo.InvariantCulture.CompareInfo.LastIndexOf(parameters, "\"") - outputStartIndex + 1);
+
 
             if (exitCode == 0) //apparently ffmpeg will sometimes return 0 even if there is an error. 
             {
                 return new ConversionResult() { Input = input, Output = output, Succeeded = true, StartTime = startTime, EndTime = DateTime.UtcNow };
-               // return (input, true);
+                // return (input, true);
             }
             else
             {
                 return new ConversionResult() { Input = input, Output = output, Succeeded = false, StartTime = startTime, EndTime = DateTime.UtcNow };
-               // return (input, false);
+                // return (input, false);
             }
         }
 
         //helpers
+
+        #region Add and remove to OptionsQueue methods
 
         /// <summary>
         /// Queue a FFmpegOptions object for processing
@@ -142,10 +147,45 @@ namespace simple_audio_editor
             //pass through to argsbuilder.create and add to a list of strings?
         }
 
-        public void RemoveFromQueue(FFmpegOptions option)
+
+        public bool RemoveFromQueue(IList<FFmpegOptions> options)
         {
-            //todo
+            var optionsQueueAsList = OptionsQueue.ToList();
+            var removedCount = optionsQueueAsList.RemoveAll(o => options.Any(opt => opt == o));
+            OptionsQueue = optionsQueueAsList;
+
+            return (removedCount == options.Count);
         }
+
+        public void RemoveFromQueue(IList<ConversionResult> finishedTasks)
+        {
+            foreach (var conversionResult in finishedTasks)
+            {
+                if (conversionResult.Succeeded)
+                {
+                    var toRemove =
+                        OptionsQueue.FirstOrDefault(o =>
+                            o.Input == conversionResult.Input &&
+                            o.Output == conversionResult.Output);
+                    RemoveFromQueue(toRemove);
+                }
+            }
+        }
+
+        public bool RemoveFromQueue(FFmpegOptions option)
+        {
+            return OptionsQueue.Remove(option);
+        }
+
+        public bool ClearQueue()
+        {
+           OptionsQueue.Clear();
+
+           if (OptionsQueue.Count == 0) return true;
+
+           return false;
+        }
+        #endregion
     }
 
 
