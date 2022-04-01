@@ -1,0 +1,61 @@
+﻿<Window x:Class="simple_audio_editor_GUI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+
+    <Grid>
+        <Grid ShowGridLines="True">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="5.5*"/>
+                <RowDefinition Height="2.5*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <TabControl Grid.Column="0" Grid.Row="0" Background="GhostWhite">
+                <TabItem Header="General" >
+                    <StackPanel>
+                        <Border BorderBrush="Silver" 
+                            Background="GhostWhite"
+                            BorderThickness="2"
+                            Height="auto" 
+                            Margin="15 15 15 2.5 "
+                            Width="auto"
+                            CornerRadius="8 8 1 1">
+                            <!-- Settings Section -->
+                            <StackPanel Margin="5 5 5 5">
+                                <Label Content="INPUT FILE PATH ..." />
+                                <Label Content="OUTPUT FILE PATH ..." />
+                                <Label Content="TRIM SELECTOR GOES HERE...(Start, end)" />
+                                <Label Content="VOLUME SELECTOR GOES HERE..." />
+                                <Label Content="BITRATE SELECTOR GOES HERE..." />
+                                <Label Content="MAYBE AUDIO PLAYER goes here..." />
+                            </StackPanel>
+                        </Border>
+
+                        <Border BorderBrush="Silver" 
+                                Background="GhostWhite"
+                                BorderThickness="2"
+                                Height="auto" 
+                                Margin="15 2.5 15 15 "
+                                Width="auto"
+                                CornerRadius="1 1 8 8">
+                            <!-- Trim List -->
+                            <ListView Background="Transparent" BorderThickness="0">
+                                LIST OF TRIM SECTION
+                                <Label>FILLER</Label>
+                            </ListView>
+                        </Border>
+                    </StackPanel>
+                </TabItem>
+                <TabItem Header="+" />
+            </TabControl>
+            <!-- Job Queue -->
+            <DataGrid Grid.Column="0" Grid.Row="1" HeadersVisibility="Column">
+            </DataGrid>
+        </Grid>
+    </Grid>
+</Window>
