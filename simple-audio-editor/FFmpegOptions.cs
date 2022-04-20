@@ -7,7 +7,7 @@ using System.Net.Sockets;
 namespace simple_audio_editor
 {
     /// <summary>
-    /// Used to set arguments for the FFmpeg command-line. You need to set a valid input and output path, and your ffmpeg.exe path.
+    /// Used to set arguments for the FFmpeg command-line. You need to set a valid input and output path.
     /// Currently handles audio - volume, bit rate, and trimming;
     /// </summary>
     public class FFmpegOptions : IEquatable<FFmpegOptions>

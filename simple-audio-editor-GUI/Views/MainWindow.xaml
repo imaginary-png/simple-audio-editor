@@ -3,8 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewModels="clr-namespace:simple_audio_editor_GUI.ViewModels"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
+    <Window.DataContext>
+        <viewModels:MainWindowViewModel />
+    </Window.DataContext>
 
     <Grid>
         <Grid ShowGridLines="True">
@@ -27,11 +31,41 @@
                             CornerRadius="8 8 1 1">
                             <!-- Settings Section -->
                             <StackPanel Margin="5 5 5 5">
-                                <Label Content="INPUT FILE PATH ..." />
-                                <Label Content="OUTPUT FILE PATH ..." />
-                                <Label Content="TRIM SELECTOR GOES HERE...(Start, end)" />
-                                <Label Content="VOLUME SELECTOR GOES HERE..." />
-                                <Label Content="BITRATE SELECTOR GOES HERE..." />
+                                <TextBox 
+                                    IsReadOnly="True" 
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Margin="2 2 2 2"
+                                    Text="{Binding Input}" />
+                                <TextBox 
+                                    IsReadOnly="True"
+                                    BorderThickness="0"
+                                    Background="Transparent"
+                                    Margin="2 2 2 2"
+                                    Text="{Binding Output}" />
+                                <TextBox 
+                                    IsReadOnly="True"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Margin="2 2 2 2"
+                                    Text="TRIM SELECTOR GOES HERE...(Start, end)" />
+
+                                <TextBox 
+                                    BorderThickness="0"
+                                    HorizontalAlignment="Left"
+                                    TextAlignment="Center"
+                                    Width="50"
+                                    Margin="2 2 2 2"
+                                    Text="{Binding Volume}" />
+
+                                <TextBox 
+                                BorderThickness="0"
+                                HorizontalAlignment="Left"
+                                TextAlignment="Center"
+                                Width="50"
+                                Margin="2 2 2 2"
+                                Text="{Binding BitRate}" />
+
                                 <Label Content="MAYBE AUDIO PLAYER goes here..." />
                             </StackPanel>
                         </Border>
@@ -49,6 +83,22 @@
                                 <Label>FILLER</Label>
                             </ListView>
                         </Border>
+
+                            <Button 
+                                Command="{Binding AddButtonPressed}"
+                                CommandParameter="{Binding Volume}"
+                                HorizontalAlignment="Right"
+                                Margin="0 0 15 0"
+                                Width="75" 
+                                Height="20">
+                                <Button.Resources>
+                                    <Style TargetType="{x:Type Border}">
+                                        <Setter Property="CornerRadius" Value="4 4 4 4"/>
+                                    </Style>
+                                </Button.Resources>
+                                Add
+                        </Button>
+
                     </StackPanel>
                 </TabItem>
                 <TabItem Header="+" />
