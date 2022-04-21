@@ -5,10 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:simple_audio_editor_GUI.ViewModels"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Simple Audio Editor" Height="500" Width="800"
+        FontSize="16">
+    <!--SizeToContent="WidthAndHeight"-->
     <Window.DataContext>
         <viewModels:MainWindowViewModel />
     </Window.DataContext>
+
 
     <Grid>
         <Grid ShowGridLines="True">
@@ -31,35 +34,55 @@
                             CornerRadius="8 8 1 1">
                             <!-- Settings Section -->
                             <StackPanel Margin="5 5 5 5">
-                                <TextBox 
+
+                                <StackPanel Orientation="Horizontal" Background="Aqua"
+                                            Margin="0 0 0 6">
+
+                                    <Label Content="Input "
+                                           Margin="20 0 0 0"
+                                           Padding="0" 
+                                           FontWeight="Bold"
+                                           VerticalAlignment="Center"/>
+
+                                    <TextBox 
                                     IsReadOnly="True" 
-                                    Background="Transparent"
-                                    BorderThickness="0"
-                                    Margin="2 2 2 2"
+                                    BorderThickness="1"
+                                    Margin="10 0 10 0"
+                                    Width="550"
+                                    FontSize="16"
                                     Text="{Binding Input}" />
+
+                                    <Button 
+                                        Width="65"
+                                        Height="20"
+                                        FontSize="12"
+                                        Content="Select File"
+                                        Command="{Binding OpenFileButtonClicked}"/>
+
+                                </StackPanel>
                                 <TextBox 
                                     IsReadOnly="True"
-                                    BorderThickness="0"
-                                    Background="Transparent"
-                                    Margin="2 2 2 2"
+                                    BorderThickness="1"
+                                    Margin="100 2 100 4"
                                     Text="{Binding Output}" />
                                 <TextBox 
                                     IsReadOnly="True"
                                     Background="Transparent"
                                     BorderThickness="0"
-                                    Margin="2 2 2 2"
+
+                                    Margin="2 2 2 4"    
                                     Text="TRIM SELECTOR GOES HERE...(Start, end)" />
 
                                 <TextBox 
-                                    BorderThickness="0"
+                                    BorderThickness="1"
                                     HorizontalAlignment="Left"
                                     TextAlignment="Center"
                                     Width="50"
-                                    Margin="2 2 2 2"
+                                    Margin="2 2 2 6"
                                     Text="{Binding Volume}" />
 
                                 <TextBox 
-                                BorderThickness="0"
+                                BorderThickness="1"
                                 HorizontalAlignment="Left"
                                 TextAlignment="Center"
                                 Width="50"
@@ -106,6 +129,19 @@
             <!-- Job Queue -->
             <DataGrid Grid.Column="0" Grid.Row="1" HeadersVisibility="Column">
             </DataGrid>
+            <Button Grid.Column="0" Grid.Row="1"
+                    Width="75"
+                    Height="20"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Margin="0 0 18 20"
+                    Content="Start Jobs">
+                <Button.Resources>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="CornerRadius" Value="2 2 2 2"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
         </Grid>
     </Grid>
 </Window>
