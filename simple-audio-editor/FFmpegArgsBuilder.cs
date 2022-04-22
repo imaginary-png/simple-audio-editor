@@ -5,15 +5,9 @@ namespace simple_audio_editor
 {
     public static class FFmpegArgsBuilder
     {
-        static string Input = "C:\\PROGRAMMING STUFF\\C#\\simple-audio-editor\\test1.mp3";
-        static string Output = "C:\\PROGRAMMING STUFF\\C#\\simple-audio-editor\\OUTPUT.mp3";
-        static string FFmpegPath = "C:\\ffmpeg\\bin\\ffmpeg.exe";
-
-
         private static string _beginningArg = $"-y -i \"";
         private static string _filterArg = "\" -filter_complex \"";
         private static string _trimMapOutArg = $"-map [outa]";
-        private static string _endArg = $"\"{Output}\"";
 
         /// <summary>
         /// Returns an string that represents the FFmpeg args for the conversion options.

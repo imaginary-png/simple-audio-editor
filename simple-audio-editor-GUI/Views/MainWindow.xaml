@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:simple_audio_editor_GUI.ViewModels"
         mc:Ignorable="d"
-        Title="Simple Audio Editor" Height="500" Width="800"
+        Title="Simple Audio Editor" Height="600" Width="800"
         FontSize="16">
     <!--SizeToContent="WidthAndHeight"-->
     <Window.DataContext>
@@ -39,18 +39,34 @@
                                             Margin="0 0 0 6">
 
                                     <Label Content="Input "
-                                           Margin="20 0 0 0"
+                                           Margin="20 0 10 0"
                                            Padding="0" 
                                            FontWeight="Bold"
                                            VerticalAlignment="Center"/>
 
-                                    <TextBox 
-                                    IsReadOnly="True" 
-                                    BorderThickness="1"
-                                    Margin="10 0 10 0"
-                                    Width="550"
-                                    FontSize="16"
-                                    Text="{Binding Input}" />
+                                    <TextBox Name="InputTextBox"
+                                             ToolTip="{Binding Input}" 
+                                             ToolTipService.InitialShowDelay="2000"
+                                             IsReadOnly="True" 
+                                             BorderThickness="1"
+                                             Margin="10 0 10 0"
+                                             Width="550"
+                                             FontSize="16"
+                                             Text="{Binding Input}" />
+
+                                    <!-- popup example code, might use tooltips instead. -->
+                                    <Popup 
+
+                                        AllowsTransparency="True"
+                                        Placement="MousePoint"
+                                        PopupAnimation="Fade"
+                                        IsOpen="{Binding Path=IsMouseOver, ElementName=InputTextBox, Mode=OneWay}">
+
+                                        <Border Background="GhostWhite">
+                                            <TextBlock Text="{Binding Input}"/>
+                                        </Border>
+                                    </Popup>
+                                    <!-- END popup example code, might use tooltips instead. END-->
 
                                     <Button 
                                         Width="65"
@@ -60,34 +76,114 @@
                                         Command="{Binding OpenFileButtonClicked}"/>
 
                                 </StackPanel>
-                                <TextBox 
-                                    IsReadOnly="True"
-                                    BorderThickness="1"
-                                    Margin="100 2 100 4"
+
+
+                                <StackPanel Orientation="Horizontal" Background="Aqua"
+                                            Margin="0 0 0 6">
+
+                                    <Label Content="Output"
+                                           Margin="20 0 1 0"
+                                           Padding="0" 
+                                           FontWeight="Bold"
+                                           VerticalAlignment="Center"/>
+
+                                    <TextBox 
+                                        ToolTip="{Binding Output}" 
+                                        ToolTipService.InitialShowDelay="2000"
+                                        IsReadOnly="True" 
+                                        BorderThickness="1"
+                                        Margin="10 0 10 0"
+                                        Width="550"
+                                        FontSize="16"
                                     Text="{Binding Output}" />
-                                <TextBox 
-                                    IsReadOnly="True"
-                                    Background="Transparent"
-                                    BorderThickness="0"
+                                </StackPanel>
 
-                                    Margin="2 2 2 4"    
-                                    Text="TRIM SELECTOR GOES HERE...(Start, end)" />
+                                <StackPanel Orientation="Horizontal" Background="Aqua"
+                                            Margin="0 0 0 6">
 
-                                <TextBox 
+                                    <Label Content="Trim"
+                                           ToolTip="Trim a subsection of audio to keep" 
+                                           ToolTipService.InitialShowDelay="2000"
+                                           Margin="20 0 29 0"
+                                           Padding="0" 
+                                           FontWeight="Bold"
+                                           VerticalAlignment="Center"/>
+
+                                    <!-- Trim Start -->
+                                    <TextBox 
+                                        ToolTip="Start Time in seconds" 
+                                        ToolTipService.InitialShowDelay="2000"
+                                        BorderThickness="1"
+                                        HorizontalAlignment="Left"
+                                        TextAlignment="Center"
+                                        Width="50"
+                                        Margin="2 2 2 6"
+                                        Text="{Binding TrimStart}" />
+
+                                    <Label Content="s -"/>
+
+                                    <!-- Trim End -->
+                                    <TextBox 
+                                        ToolTip="End Time in seconds" 
+                                        ToolTipService.InitialShowDelay="2000"
+                                        BorderThickness="1"
+                                        HorizontalAlignment="Left"
+                                        TextAlignment="Center"
+                                        Width="50"
+                                        Margin="2 2 2 6"
+                                        Text="{Binding TrimEnd}" />
+                                    <Label Content="s" Margin="0 0 10 0" />
+
+                                    <Button
+                                        Width="40"
+                                        Height="20"
+                                        FontSize="12"
+                                        Content="Add"
+                                        Command="{Binding AddTrimTimeButtonPressed}">
+                                        <Button.Resources>
+                                            <Style TargetType="{x:Type Border}">
+                                                <Setter Property="CornerRadius" Value="4 4 4 4"/>
+                                            </Style>
+                                        </Button.Resources>
+                                    </Button>
+
+                                </StackPanel>
+
+                                <StackPanel Orientation="Horizontal" Background="Aqua"
+                                            Margin="0 0 0 6">
+
+                                    <Label Content="Volume"
+                                           Margin="20 0 6 0"
+                                           Padding="0" 
+                                           FontWeight="Bold"
+                                           VerticalAlignment="Center"/>
+                                    <TextBox 
+                                        ToolTip="1 = 100% volume, 0.5 = 50% volume, etc." 
+                                        ToolTipService.InitialShowDelay="2000"
                                     BorderThickness="1"
                                     HorizontalAlignment="Left"
                                     TextAlignment="Center"
                                     Width="50"
                                     Margin="2 2 2 6"
                                     Text="{Binding Volume}" />
+                                </StackPanel>
 
-                                <TextBox 
+                                <StackPanel Orientation="Horizontal" Background="Aqua"
+                                            Margin="0 0 0 6">
+
+                                    <Label Content="Bit Rate"
+                                           Margin="20 0 4 0"
+                                           Padding="0" 
+                                           FontWeight="Bold"
+                                           VerticalAlignment="Center"/>
+                                    <TextBox 
                                 BorderThickness="1"
                                 HorizontalAlignment="Left"
                                 TextAlignment="Center"
                                 Width="50"
                                 Margin="2 2 2 2"
                                 Text="{Binding BitRate}" />
+                                </StackPanel>
 
                                 <Label Content="MAYBE AUDIO PLAYER goes here..." />
                             </StackPanel>
@@ -100,26 +196,56 @@
                                 Margin="15 2.5 15 15 "
                                 Width="auto"
                                 CornerRadius="1 1 8 8">
+
                             <!-- Trim List -->
-                            <ListView Background="Transparent" BorderThickness="0">
-                                LIST OF TRIM SECTION
-                                <Label>FILLER</Label>
+                            <ListView Background="Transparent"  Name="TrimListView"
+                                      BorderThickness="0"
+                                      ScrollViewer.VerticalScrollBarVisibility="Visible"
+                                      Height="75"
+                                      ItemsSource="{Binding TrimList}">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="3*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <WrapPanel Width="300">
+                                                <TextBlock Text="Start: " />
+                                                <TextBlock Text="{Binding Start}" FontWeight="Bold" />
+                                                <TextBlock Text=", " />
+                                                <TextBlock Text="End: " />
+                                                <TextBlock Text="{Binding End}" FontWeight="Bold" />
+                                            </WrapPanel>
+                                            <Button Grid.Column="1" 
+                                                    Command="{Binding ElementName=TrimListView, Path=DataContext.RemoveTrimPressed}"
+                                                    CommandParameter="{Binding}"
+                                                    Content="X" 
+                                                    Width="18"
+                                                    Height="18"
+                                                    FontSize="12"
+                                                    Margin=" 0 2 0 2">
+                                            </Button>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+
                             </ListView>
                         </Border>
 
-                            <Button 
+                        <Button 
                                 Command="{Binding AddButtonPressed}"
                                 CommandParameter="{Binding Volume}"
                                 HorizontalAlignment="Right"
                                 Margin="0 0 15 0"
                                 Width="75" 
-                                Height="20">
-                                <Button.Resources>
-                                    <Style TargetType="{x:Type Border}">
-                                        <Setter Property="CornerRadius" Value="4 4 4 4"/>
-                                    </Style>
-                                </Button.Resources>
-                                Add
+                                Height="25">
+                            <Button.Resources>
+                                <Style TargetType="{x:Type Border}">
+                                    <Setter Property="CornerRadius" Value="4 4 4 4"/>
+                                </Style>
+                            </Button.Resources>
+                            Add
                         </Button>
 
                     </StackPanel>
@@ -131,7 +257,7 @@
             </DataGrid>
             <Button Grid.Column="0" Grid.Row="1"
                     Width="75"
-                    Height="20"
+                    Height="25"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Bottom"
                     Margin="0 0 18 20"

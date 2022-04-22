@@ -13,20 +13,36 @@ namespace simple_audio_editor
 {
     public class FFmpegProcess
     {
-        public IList<FFmpegOptions> OptionsQueue { get; private set; }
+        public IList<FFmpegOptions> OptionsQueue { get; set; }
 
-        public IList<string>
-            FinishedFiles
-        { get; private set; } //put paths to successful conversions here? for use in GUI?
-        public IList<string>
-            FailedFiles
-        { get; private set; } //put paths for failed conversion inputs here? for use in GUI?
-        public ObservableCollection<ConversionResult>
-            Results
-        { get; private set; } //put paths for failed conversion inputs here? for use in GUI?
+        public IList<string> FinishedFiles { get; private set; } //put paths to successful conversions here? for use in GUI?
+        public IList<string> FailedFiles { get; private set; } //put paths for failed conversion inputs here? for use in GUI?
+        public ObservableCollection<ConversionResult> Results { get; private set; } //put paths for failed conversion inputs here? for use in GUI?
 
         private IList<Task<ConversionResult>> _taskQueue;
 
+        public FFmpegProcess()
+        {
+            OptionsQueue = new List<FFmpegOptions>();
+            _taskQueue = new List<Task<ConversionResult>>();
+            Results = new ObservableCollection<ConversionResult>();
+            Results.CollectionChanged += (object? sender, NotifyCollectionChangedEventArgs args) =>
+            {
+#if DEBUG
+                Console.ForegroundColor = ConsoleColor.DarkCyan;
+                //Console.WriteLine($"{input} {result}");
+                if (args?.NewItems != null)
+                {
+                    foreach (var r in args.NewItems)
+                    {
+                        Console.WriteLine(r);
+                    }
+                }
+
+                Console.ResetColor();
+#endif
+            };
+        }
 
         public FFmpegProcess(List<FFmpegOptions> optionsQueue)
         {

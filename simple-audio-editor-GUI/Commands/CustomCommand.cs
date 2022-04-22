@@ -3,11 +3,11 @@ using System.Windows.Input;
 
 namespace simple_audio_editor_GUI.Commands
 {
-    public class AddToQueueCommand : ICommand
+    public class CustomCommand : ICommand
     {
         private Action _action;
 
-        public AddToQueueCommand(Action action)
+        public CustomCommand(Action action)
         {
             _action = action;
         }
@@ -19,7 +19,6 @@ namespace simple_audio_editor_GUI.Commands
         public void Execute(object? parameter)
         {
             _action?.Invoke();
-            //Executed?.Invoke(null, EventArgs.Empty);
         }
 
         public event EventHandler CanExecuteChanged;

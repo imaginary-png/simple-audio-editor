@@ -41,11 +41,11 @@ namespace simple_audio_editor
         public IList<TrimTime> TrimTimes { get; private set; }
 
         //unnecessary flags - prob remove. or might use in future functionality?
-        public bool InputFlag = false;
-        public bool OutputFlag = false;
-        public bool VolumeFlag = false;
-        public bool BitRateFlag = false;
-        public bool TrimFlag = false; //trim flag is used in argsbuilder.
+        public bool InputFlag { get; set; }
+        public bool OutputFlag { get; set; }
+        public bool VolumeFlag { get; set; }
+        public bool BitRateFlag { get; set; }
+        public bool TrimFlag { get; set; } //trim flag is used in argsbuilder.
 
         /// <summary>
         /// Used to set arguments for the FFmpeg command-line. <br/>
@@ -91,10 +91,10 @@ namespace simple_audio_editor
         #region Trim Functions
 
         /// <summary>
-        /// Specifies the start and end time of a subsection to save. Negative numbers result in start as 0 seconds.
+        /// Specifies the start and end time, in seconds, of a subsection to save. Negative numbers result in start as 0 seconds.
         /// </summary>
-        /// <param name="start">Start Time</param>
-        /// <param name="end">End Time</param>
+        /// <param name="start">Start Time in seconds</param>
+        /// <param name="end">End Time in seconds</param>
         public void AddTrimSection(int start, int end = 0)
         {
             //bother verifying start is positive? negative values are valid args for ffmpeg and result as if start was 0 seconds.
@@ -151,8 +151,8 @@ namespace simple_audio_editor
 
     public readonly struct TrimTime
     {
-        public readonly int Start;
-        public readonly int End;
+        public readonly int Start { get; }
+        public readonly int End { get; }
 
         public TrimTime(int start, int end = 0)
         {

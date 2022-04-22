@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Windows.Input;
+using simple_audio_editor;
 
 namespace simple_audio_editor_GUI.Commands
 {
-    public class OpenFileCommand : ICommand
+    public class RemoveTrimCommand : ICommand
     {
-        private Action _action;
+        private Action<TrimTime> _action;
 
-        public OpenFileCommand(Action action)
+        public RemoveTrimCommand(Action<TrimTime> action)
         {
             _action = action;
         }
-
 
         public bool CanExecute(object? parameter)
         {
@@ -20,7 +20,10 @@ namespace simple_audio_editor_GUI.Commands
 
         public void Execute(object? parameter)
         {
-            _action?.Invoke();
+            if (parameter is TrimTime)
+            {
+                _action?.Invoke((TrimTime)parameter);
+            }
         }
 
         public event EventHandler? CanExecuteChanged;
