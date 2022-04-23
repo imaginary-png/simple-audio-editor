@@ -434,7 +434,8 @@
                 Margin="0 0 32 2">
             <Image Source="../Images/font decrease.png"/>
         </Button>
-
+        <!-- Images from https://icon-icons.com/icon/format-font-size-increase/137585-->
+        <!--         and https://icon-icons.com/icon/format-font-size-decrease/136597-->
     </Grid>
 
 </Window>
