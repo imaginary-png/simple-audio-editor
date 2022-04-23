@@ -21,6 +21,7 @@ namespace simple_audio_editor_GUI.ViewModels
         private readonly double _default_Volume = 1.0;
         private readonly int _default_Bit_Rate = 128;
         private readonly int _default_Trim_Time = 0;
+        private readonly int _default_Font_Size = 12;
 
         private string _input;
         private string _output;
@@ -29,6 +30,7 @@ namespace simple_audio_editor_GUI.ViewModels
         private int _trimStart;
         private int _trimEnd;
         private bool _notNotProcessingJobs;
+        private int _fontSize;
 
         private FFmpegProcess FFmpegProcesses { get; set; }
 
@@ -115,6 +117,18 @@ namespace simple_audio_editor_GUI.ViewModels
             }
         }
 
+        public int FontSize
+        {
+            get => _fontSize;
+            set
+            {
+                Trace.WriteLine(value);
+                if (value == _fontSize || value is < 8 or > 30) return;
+                _fontSize = value;
+                OnPropertyChanged(nameof(FontSize));
+            }
+        }
+
         public ICommand AddJobButtonClicked { get; set; }
         public ICommand AddTrimTimeButtonClicked { get; set; }
         public ICommand OpenFileButtonClicked { get; set; }
@@ -123,6 +137,9 @@ namespace simple_audio_editor_GUI.ViewModels
         public ICommand StartJobClicked { get; set; }
         public ICommand RemoveFinishedJobsClicked { get; set; }
         public ICommand RemoveAllJobsClicked { get; set; }
+
+        public ICommand IncreaseFontClicked { get; set; }
+        public ICommand DecreaseFontClicked { get; set; }
 
 
         public MainWindowViewModel()
@@ -140,6 +157,7 @@ namespace simple_audio_editor_GUI.ViewModels
             TrimStart = _default_Trim_Time;
             TrimEnd = _default_Trim_Time;
             NotProcessingJobs = true;
+            FontSize = _default_Font_Size;
 
             AddJobButtonClicked = new CustomCommand(AddJobButton_Executed);
             OpenFileButtonClicked = new CustomCommand(OpenFile_Executed);
@@ -147,6 +165,8 @@ namespace simple_audio_editor_GUI.ViewModels
             StartJobClicked = new CustomCommand(StartJob_Executed);
             RemoveFinishedJobsClicked = new CustomCommand(RemoveFinishedJobs_Executed);
             RemoveAllJobsClicked = new CustomCommand(RemoveAllJobs_Executed);
+            IncreaseFontClicked = new CustomCommand(IncreaseFont_Executed);
+            DecreaseFontClicked = new CustomCommand(DecreaseFont_Executed);
 
             RemoveTrimClicked = new GenericCommand<TrimTime>(RemoveTrimTime_Executed);
             RemoveJobClicked = new GenericCommand<Job>(RemoveJob_Executed);
@@ -254,6 +274,22 @@ namespace simple_audio_editor_GUI.ViewModels
         {
             Jobs.Clear();
         }
+
+        #region Font Sizing
+
+        public void IncreaseFont_Executed()
+        {
+            Trace.WriteLine("HELLO?");
+            FontSize += 2;
+        }
+        public void DecreaseFont_Executed()
+        {
+            FontSize -= 2;
+        }
+
+
+        #endregion
+
         #endregion
 
 

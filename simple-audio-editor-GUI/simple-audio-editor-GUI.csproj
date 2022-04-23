@@ -8,7 +8,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\font decrease.png" />
+    <None Remove="Images\font increase.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\simple-audio-editor\simple-audio-editor.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\font decrease.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\font increase.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
 </Project>

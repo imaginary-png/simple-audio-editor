@@ -7,7 +7,7 @@
         xmlns:system="clr-namespace:System;assembly=System.Runtime"
         mc:Ignorable="d"
         Title="Simple Audio Editor" Height="600" Width="800"
-        FontSize="16">
+        FontSize="{Binding FontSize}">
     <!--SizeToContent="WidthAndHeight"-->
     <Window.DataContext>
         <viewModels:MainWindowViewModel />
@@ -29,6 +29,7 @@
             <RowDefinition Height="2*"/>
             <RowDefinition Height="0.5*"/>
         </Grid.RowDefinitions>
+      
         <TabControl Grid.Column="0" Grid.Row="0" Background="GhostWhite">
             <TabItem Header="General" >
                 <StackPanel>
@@ -357,7 +358,7 @@
                             </Button>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
-                    
+
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
 
@@ -413,6 +414,26 @@
             </Button.Resources>
         </Button>
 
+        <!-- Font resize buttons -->
+        <!-- make big -->
+        <Button Grid.Row="0" Grid.Column="0"
+                Command="{Binding IncreaseFontClicked}"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Right"
+                Width="20" Height="20"
+                Margin="0 0 8 2">
+            <Image Source="../Images/font increase.png"/>
+        </Button>
+
+        <!-- make small -->
+        <Button Grid.Row="0" Grid.Column="0"
+                Command="{Binding DecreaseFontClicked}"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Right"
+                Width="20" Height="20"
+                Margin="0 0 32 2">
+            <Image Source="../Images/font decrease.png"/>
+        </Button>
 
     </Grid>
 
