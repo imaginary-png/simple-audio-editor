@@ -45,7 +45,7 @@ namespace simple_audio_editor
         public bool OutputFlag { get; set; }
         public bool VolumeFlag { get; set; }
         public bool BitRateFlag { get; set; }
-        public bool TrimFlag { get; set; } //trim flag is used in argsbuilder.
+        public bool TrimFlag { get; set; } //trim flag is used in argsbuilder -- but not really needed. could remove/refactor but cbf.
 
         /// <summary> 
         /// Used to set arguments for the FFmpeg command-line. Input Output paths and empty.<br/>

@@ -5,9 +5,12 @@ using simple_audio_editor_GUI.Commands;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using simple_audio_editor_GUI.Models;
 
 namespace simple_audio_editor_GUI.ViewModels
 {
@@ -25,10 +28,14 @@ namespace simple_audio_editor_GUI.ViewModels
         private int _bitRate;
         private int _trimStart;
         private int _trimEnd;
+        private bool _notNotProcessingJobs;
 
-        private ObservableCollection<FFmpegOptions> _ffmpegOptions { get; set; }
-        private FFmpegProcess _ffmpegProcess { get; set; }
-        
+        private FFmpegProcess FFmpegProcesses { get; set; }
+
+        //private ObservableCollection<FFmpegOptions> _ffmpegOptions { get; set; }
+
+        public ObservableCollection<Job> Jobs { get; set; }
+
         public ObservableCollection<TrimTime> TrimList { get; set; }
 
         public string Input
@@ -97,17 +104,34 @@ namespace simple_audio_editor_GUI.ViewModels
             }
         }
 
-        public ICommand AddJobButtonPressed { get; set; }
-        public ICommand AddTrimTimeButtonPressed { get; set; }
+        public bool NotProcessingJobs
+        {
+            get => _notNotProcessingJobs;
+            set
+            {
+                if (value == _notNotProcessingJobs) return;
+                _notNotProcessingJobs = value;
+                OnPropertyChanged(nameof(NotProcessingJobs));
+            }
+        }
+
+        public ICommand AddJobButtonClicked { get; set; }
+        public ICommand AddTrimTimeButtonClicked { get; set; }
         public ICommand OpenFileButtonClicked { get; set; }
-        public ICommand RemoveTrimPressed { get; set; }
-        
+        public ICommand RemoveTrimClicked { get; set; }
+        public ICommand RemoveJobClicked { get; set; }
+        public ICommand StartJobClicked { get; set; }
+        public ICommand RemoveFinishedJobsClicked { get; set; }
+        public ICommand RemoveAllJobsClicked { get; set; }
+
 
         public MainWindowViewModel()
         {
-            _ffmpegOptions = new ObservableCollection<FFmpegOptions>();
+            Jobs = new ObservableCollection<Job>();
+
+            FFmpegProcesses = new FFmpegProcess();
+
             TrimList = new ObservableCollection<TrimTime>();
-            _ffmpegProcess = new FFmpegProcess();
 
             Input = _default_Input;
             Output = _default_Output;
@@ -115,12 +139,17 @@ namespace simple_audio_editor_GUI.ViewModels
             BitRate = _default_Bit_Rate;
             TrimStart = _default_Trim_Time;
             TrimEnd = _default_Trim_Time;
+            NotProcessingJobs = true;
 
-            AddJobButtonPressed = new CustomCommand(AddJobButton_Executed);
+            AddJobButtonClicked = new CustomCommand(AddJobButton_Executed);
             OpenFileButtonClicked = new CustomCommand(OpenFile_Executed);
-            AddTrimTimeButtonPressed = new CustomCommand(AddTrimTime_Executed);
-            RemoveTrimPressed = new GenericCommand<TrimTime>(RemoveTrimTime_Executed);
+            AddTrimTimeButtonClicked = new CustomCommand(AddTrimTime_Executed);
+            StartJobClicked = new CustomCommand(StartJob_Executed);
+            RemoveFinishedJobsClicked = new CustomCommand(RemoveFinishedJobs_Executed);
+            RemoveAllJobsClicked = new CustomCommand(RemoveAllJobs_Executed);
 
+            RemoveTrimClicked = new GenericCommand<TrimTime>(RemoveTrimTime_Executed);
+            RemoveJobClicked = new GenericCommand<Job>(RemoveJob_Executed);
         }
 
 
@@ -129,72 +158,30 @@ namespace simple_audio_editor_GUI.ViewModels
         public void AddJobButton_Executed()
         {
             //create new ffmpegoptions here.
-            var opt = new FFmpegOptions();
-            
-            if (TrimList.Count > 0)
-            {
-                opt = new FFmpegOptions(Input, Output, TrimList, Volume, BitRate);
-                _ffmpegOptions.Add(opt);
-                //_ffmpegOptions.Add(new FFmpegOptions(Input, Output, TrimList, Volume, BitRate));
-            }
-            else
-            {
-                opt = new FFmpegOptions(Input, Output, TrimList, Volume, BitRate);
-                _ffmpegOptions.Add(opt);
-                //_ffmpegOptions.Add(new FFmpegOptions(Input, Output, TrimList, Volume, BitRate));
-            }
+            var opt = new FFmpegOptions(Input, Output, new List<TrimTime>(TrimList), Volume, BitRate);
+            Jobs.Add(new Job(opt));
 
             //clear current input, output, etc to default values.
             ResetAllInputs();
 
+            #region Debug stuff delete later idk
 
-            var optionAsText= "";
+            /*var optionAsText = "";
             var argAsText = "";
 
-            foreach (var f in _ffmpegOptions)
+            foreach (var f in Jobs)
             {
-                optionAsText += $"Options: In: {f.Input}, Out: {f.Output}, Volume: {f.Volume}, BitRate: {f.BitRate}";
+                optionAsText += $"Options: In: {f.Options.Input}, Out: {f.Options.Output}, Volume: {f.Options.Volume}, BitRate: {f.Options.BitRate}";
                 argAsText = FFmpegArgsBuilder.Create(opt);
-
             }
 
             var win = new Window();
-            win.Content = new TextBox { Text = "\n\n"+ optionAsText + "\n\n" + argAsText };
+            win.Content = new TextBox { Text = "\n\n" + optionAsText + "\n\n" + argAsText + "\n\n" };
             win.SizeToContent = SizeToContent.WidthAndHeight;
-            win.ShowDialog();
-        }
-        
-        public void Test_Executed()
-        {
-            //create new ffmpegoptions here.
-            
-            if (TrimList.Count > 0)
-            {
-                _ffmpegOptions.Add(new FFmpegOptions(Input, Output, TrimList, Volume, BitRate));
-            }
-            else
-            {
-                _ffmpegOptions.Add(new FFmpegOptions(Input, Output, TrimList, Volume, BitRate));
-            }
-            //clear current input, output, etc to default values.
+            win.ShowDialog();*/
 
-            var text = "";
+            #endregion
 
-            foreach (var t in TrimList)
-            {
-                text += $"Trim: {t.Start} - {t.End}\n";
-            }
-
-            text += "\n\n";
-            foreach (var f in _ffmpegOptions)
-            {
-                text += $"Options: In: {f.Input}, Out: {f.Output}, Volume: {f.Volume}, BitRate: {f.BitRate}";
-            }
-
-            var win = new Window();
-            win.Content = new TextBox { Text = text+ "\n\n"+$"Input = {Input}\n\nOutput = {Output}\n\nVolume = {Volume}\n\nBitRate = {BitRate}\n\nTrim {TrimStart} - {TrimEnd}" };
-            win.SizeToContent = SizeToContent.WidthAndHeight;
-            win.ShowDialog();
         }
 
         public void OpenFile_Executed()
@@ -204,9 +191,9 @@ namespace simple_audio_editor_GUI.ViewModels
             open.ShowDialog();
             if (open.FileName != string.Empty)
             {
+                ResetAllInputs();
                 Input = open.FileName;
                 Output = GenerateOutputPath(Input);
-
             }
         }
 
@@ -226,6 +213,47 @@ namespace simple_audio_editor_GUI.ViewModels
             TrimList.Remove(time);
         }
 
+        public void RemoveJob_Executed(Job job)
+        {
+            Jobs.Remove(job);
+        }
+
+        public void StartJob_Executed()
+        {
+            StartFFmpegProcess();
+        }
+
+        public void RemoveFinishedJobs_Executed()
+        {
+           // var tempList = new List<Job>();
+
+            for (int i = 0; i < Jobs.Count; i++)
+            {
+                if (Jobs[i].Status == JobStatus.Success.ToString())
+                {
+                    Jobs.Remove(Jobs[i]);
+                }
+            }
+
+           /* foreach (var job in Jobs)
+            {
+                if (job.Status == JobStatus.Success.ToString())
+                {
+                    tempList.Add(job);
+                }
+            }
+
+            foreach (var job in tempList)
+            {
+                Jobs.Remove(job);
+            }*/
+
+        }
+
+        public void RemoveAllJobs_Executed()
+        {
+            Jobs.Clear();
+        }
         #endregion
 
 
@@ -254,11 +282,40 @@ namespace simple_audio_editor_GUI.ViewModels
 
             return outputPath;
         }
-        
+
         private async void StartFFmpegProcess()
         {
-            _ffmpegProcess.OptionsQueue = _ffmpegOptions;
-            await _ffmpegProcess.Start();
+            //where job status != Success, select the ffmpeg options.
+            var optList = Jobs.Where(j => j.Status != JobStatus.Success.ToString()).Select(j => j.Options).ToList();
+
+            Trace.WriteLine(optList.Count);
+            Trace.WriteLine(JobStatus.Success.ToString());
+
+            FFmpegProcesses.OptionsQueue = optList;
+
+            NotProcessingJobs = false;
+            SetStatusToProcessing();
+            await FFmpegProcesses.Start();
+            NotProcessingJobs = true;
+            SetStatusResults();
+        }
+
+        private void SetStatusToProcessing()
+        {
+            foreach (var job in Jobs)
+            {
+                job.SetStatus(JobStatus.Processing);
+            }
+        }
+
+        private void SetStatusResults()
+        {
+            foreach (var conversionResult in FFmpegProcesses.Results)
+            {
+                var j = Jobs.First(j => j.Options.Input == conversionResult.Input);
+
+                j.SetStatus(conversionResult.Succeeded ? JobStatus.Success : JobStatus.Failed);
+            }
         }
 
         private void ResetAllInputs()
@@ -269,8 +326,8 @@ namespace simple_audio_editor_GUI.ViewModels
             BitRate = _default_Bit_Rate;
             TrimStart = _default_Trim_Time;
             TrimEnd = _default_Trim_Time;
+            TrimList.Clear();
         }
-        
 
         #endregion
     }

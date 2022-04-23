@@ -22,8 +22,12 @@ namespace simple_audio_editor
 
             if (options.TrimFlag)
             {
-                trimArg = CreateTrimArg(options);
-                return $"{_beginningArg}{options.Input}{_filterArg}{trimArg}\" {bitRateArg} {_trimMapOutArg} \"{options.Output}\"";
+                if (options.TrimTimes.Count > 0)
+                {
+                    trimArg = CreateTrimArg(options);
+                    return
+                        $"{_beginningArg}{options.Input}{_filterArg}{trimArg}\" {bitRateArg} {_trimMapOutArg} \"{options.Output}\"";
+                }
             }
 
             //else no trimming, so just adjust volume and/or bitrate;

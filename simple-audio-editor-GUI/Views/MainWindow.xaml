@@ -19,14 +19,15 @@
         <system:Double x:Key="TitleLabelWidth">73</system:Double>
     </Window.Resources>
 
-    <Grid>
+    <Grid IsHitTestVisible="{Binding NotProcessingJobs}">
         <Grid ShowGridLines="True">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="5.5*"/>
-                <RowDefinition Height="2.5*"></RowDefinition>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="0.5*"/>
             </Grid.RowDefinitions>
             <TabControl Grid.Column="0" Grid.Row="0" Background="GhostWhite">
                 <TabItem Header="General" >
@@ -151,8 +152,8 @@
                                         Width="40"
                                         Height="20"
                                         FontSize="12"
-                                        Content="Add"
-                                        Command="{Binding AddTrimTimeButtonPressed}">
+                                        Content="Trim"
+                                        Command="{Binding AddTrimTimeButtonClicked}">
                                         <Button.Resources>
                                             <Style TargetType="{x:Type Border}">
                                                 <Setter Property="CornerRadius" Value="4 4 4 4"/>
@@ -238,7 +239,7 @@
                                                 <TextBlock Text="s" />
                                             </WrapPanel>
                                             <Button Grid.Column="1" 
-                                                    Command="{Binding ElementName=TrimListView, Path=DataContext.RemoveTrimPressed}"
+                                                    Command="{Binding ElementName=TrimListView, Path=DataContext.RemoveTrimClicked}"
                                                     CommandParameter="{Binding}"
                                                     Content="X" 
                                                     FontWeight="DemiBold"
@@ -278,7 +279,7 @@
                         </Border>
 
                         <Button 
-                                Command="{Binding AddJobButtonPressed}"
+                                Command="{Binding AddJobButtonClicked}"
                                 CommandParameter="{Binding Volume}"
                                 HorizontalAlignment="Right"
                                 Margin="0 0 15 0"
@@ -297,21 +298,102 @@
             </TabControl>
 
             <!-- Job Queue -->
-            <DataGrid Grid.Column="0" Grid.Row="1" HeadersVisibility="Column">
+            <DataGrid Grid.Column="0" Grid.Row="1" Name="JobDataGrid"
+                      Background="WhiteSmoke"
+                      AutoGenerateColumns="False"
+                      HeadersVisibility="Column"
+                      ColumnHeaderHeight="25"
+                      FontSize="12"
+                      IsReadOnly="True"
+                      ItemsSource="{Binding Jobs}">
+
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Job" 
+                                            Width="5*"
+                                        Binding="{Binding Options.Input}"></DataGridTextColumn>
+
+                    <DataGridTextColumn Header="Status" 
+                                        Width="1*"
+                                        Binding="{Binding Status}"></DataGridTextColumn>
+
+                    <!-- Delete Button for removing queued jobs-->
+                    <DataGridTemplateColumn Header="" 
+                                        Width="0.2*">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Grid.Column="1" 
+                                        Command="{Binding ElementName=JobDataGrid,
+                                    Path=DataContext.RemoveJobClicked}"
+                                        CommandParameter="{Binding}"
+                                        Content="X" 
+                                        FontWeight="DemiBold"
+                                        Width="10"
+                                        Height="10"
+                                        FontSize="8"
+                                        Background="Transparent"
+                                        BorderThickness="1"
+                                        Padding="0 -2 0 0"
+                                        Margin=" 0 2 0 2">
+                                </Button>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
+
             </DataGrid>
-            <Button Grid.Column="0" Grid.Row="1"
+
+            <!-- Start Jobs button -->
+            <Button Grid.Column="0" Grid.Row="2"
+                    Command="{Binding StartJobClicked}"
                     Width="75"
                     Height="25"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Bottom"
-                    Margin="0 0 18 20"
-                    Content="Start Jobs">
+                    Margin="0 0 16 6"
+                    Content="Start">
                 <Button.Resources>
                     <Style TargetType="{x:Type Border}">
                         <Setter Property="CornerRadius" Value="2 2 2 2"/>
                     </Style>
                 </Button.Resources>
             </Button>
+
+            <!-- Clear Finished Jobs button -->
+            <Button Grid.Column="0" Grid.Row="2"
+                    Command="{Binding RemoveAllJobsClicked}"
+                    Width="75"
+                    Height="25"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Bottom"
+                    Margin="6 0 16 6"
+                    FontSize="10"
+                    Content="Clear All">
+                <Button.Resources>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="CornerRadius" Value="2 2 2 2"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+
+            <!-- Clear All Jobs button -->
+            <Button Grid.Column="0" Grid.Row="2"
+                    Command="{Binding RemoveFinishedJobsClicked}"
+                    Width="75"
+                    Height="25"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Bottom"
+                    Margin="90 0 16 6"
+                    FontSize="10"
+                    Content="Clear Finished">
+                <Button.Resources>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="CornerRadius" Value="2 2 2 2"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+
+
         </Grid>
     </Grid>
 </Window>

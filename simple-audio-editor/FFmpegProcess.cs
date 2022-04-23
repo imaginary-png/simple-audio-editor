@@ -36,6 +36,7 @@ namespace simple_audio_editor
                     foreach (var r in args.NewItems)
                     {
                         Console.WriteLine(r);
+                        Trace.WriteLine(r);
                     }
                 }
 
@@ -59,6 +60,7 @@ namespace simple_audio_editor
                     foreach (var r in args.NewItems)
                     {
                         Console.WriteLine(r);
+                        Trace.WriteLine(r);
                     }
                 }
 
@@ -73,8 +75,15 @@ namespace simple_audio_editor
         /// </summary>
         public async Task Start()
         {
+            //reset results list before new batch of jobs
+            Results.Clear();
+
+            Trace.WriteLine("FFmpeg Starting...");
             foreach (var option in OptionsQueue)
             {
+                Trace.WriteLine("Using Args: " + FFmpegArgsBuilder.Create(option));
+
+                MakeOutputDir(option.Output);
                 _taskQueue.Add(Task.Run(() => Execute(FFmpegArgsBuilder.Create(option))));
             }
 
@@ -89,6 +98,7 @@ namespace simple_audio_editor
             }
 
             Console.WriteLine($"finished converting {total} files.");
+            Trace.WriteLine($"finished converting {total} files.");
         }
 
         /// <summary>
@@ -108,7 +118,11 @@ namespace simple_audio_editor
                 p.StartInfo.CreateNoWindow = true;
 
                 p.StartInfo.RedirectStandardOutput = true;
-                p.OutputDataReceived += (sender, args) => Console.WriteLine("received output: {0}", args.Data);
+                p.OutputDataReceived += (sender, args) =>
+                {
+                    Console.WriteLine($"received output: {args.Data}");
+                    Trace.WriteLine($"received output: {args.Data}");
+                };
 
                 //ffmpeg outputs lines as standarderror
                 p.StartInfo.RedirectStandardError = true;
@@ -128,11 +142,23 @@ namespace simple_audio_editor
                 exitCode = p.ExitCode;
             }
 
-            var inputStartIndex = CultureInfo.InvariantCulture.CompareInfo.IndexOf(parameters, "-i ") + 3;
-            var input = parameters.Substring(inputStartIndex, CultureInfo.InvariantCulture.CompareInfo.IndexOf(parameters, "-filter") - inputStartIndex);
+            var inputStartIndex = CultureInfo.InvariantCulture.CompareInfo.IndexOf(parameters, "-i ") + 4;
+            var input = parameters.Substring(inputStartIndex, CultureInfo.InvariantCulture.CompareInfo.IndexOf(parameters, "\" -filter") - inputStartIndex);
 
-            var outputStartIndex = CultureInfo.InvariantCulture.CompareInfo.IndexOf(parameters, "[outa] ") + 7;
-            var output = parameters.Substring(outputStartIndex, CultureInfo.InvariantCulture.CompareInfo.LastIndexOf(parameters, "\"") - outputStartIndex + 1);
+            var outputStartIndex = 0;
+            var output = "";
+            if (parameters.Contains("[outa]"))
+            {
+                outputStartIndex = CultureInfo.InvariantCulture.CompareInfo.IndexOf(parameters, "[outa] 0\"") + 7;
+                output = parameters.Substring(outputStartIndex,
+                    CultureInfo.InvariantCulture.CompareInfo.LastIndexOf(parameters, "\"") - outputStartIndex);
+            }
+            else
+            {
+                outputStartIndex = CultureInfo.InvariantCulture.CompareInfo.IndexOf(parameters, "k \"") + 3;
+                output = parameters.Substring(outputStartIndex,
+                    CultureInfo.InvariantCulture.CompareInfo.LastIndexOf(parameters, "\"") - outputStartIndex);
+            }
 
 
             if (exitCode == 0) //apparently ffmpeg will sometimes return 0 even if there is an error. 
@@ -146,8 +172,24 @@ namespace simple_audio_editor
                 // return (input, false);
             }
         }
+        
+        #region Helpers
 
-        //helpers
+        private void MakeOutputDir(string output)
+        {
+            var split = output.Split("\\");
+
+            var outputDir = "";
+            for (var i = 0; i < split.Length-1; i++)
+            {
+                outputDir += split[i] + "\\";
+            }
+
+            Trace.WriteLine("Making Output Folder... " + outputDir);
+            Directory.CreateDirectory(outputDir);
+        }
+
+        
 
         #region Add and remove to OptionsQueue methods
 
@@ -201,6 +243,8 @@ namespace simple_audio_editor
 
            return false;
         }
+        #endregion
+
         #endregion
     }
 
