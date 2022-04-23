@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:simple_audio_editor_GUI.ViewModels"
+        xmlns:system="clr-namespace:System;assembly=System.Runtime"
         mc:Ignorable="d"
         Title="Simple Audio Editor" Height="600" Width="800"
         FontSize="16">
@@ -12,6 +13,11 @@
         <viewModels:MainWindowViewModel />
     </Window.DataContext>
 
+    <Window.Resources>
+        <!-- Thickness is used for setting margin ... -->
+        <Thickness x:Key="TitleLabelMargin" Left="20" Top="0" Right="0" Bottom="0" />
+        <system:Double x:Key="TitleLabelWidth">73</system:Double>
+    </Window.Resources>
 
     <Grid>
         <Grid ShowGridLines="True">
@@ -35,11 +41,13 @@
                             <!-- Settings Section -->
                             <StackPanel Margin="5 5 5 5">
 
+                                <!-- INPUT SECTION -->
                                 <StackPanel Orientation="Horizontal" Background="Aqua"
                                             Margin="0 0 0 6">
 
-                                    <Label Content="Input "
-                                           Margin="20 0 10 0"
+                                    <Label Content="Input"
+                                           Width="{StaticResource TitleLabelWidth}"
+                                           Margin="{StaticResource TitleLabelMargin}"
                                            Padding="0" 
                                            FontWeight="Bold"
                                            VerticalAlignment="Center"/>
@@ -49,10 +57,11 @@
                                              ToolTipService.InitialShowDelay="2000"
                                              IsReadOnly="True" 
                                              BorderThickness="1"
-                                             Margin="10 0 10 0"
+                                             Margin="2 0 10 0"
                                              Width="550"
                                              FontSize="16"
                                              Text="{Binding Input}" />
+
 
                                     <!-- popup example code, might use tooltips instead. -->
                                     <Popup 
@@ -77,12 +86,13 @@
 
                                 </StackPanel>
 
-
+                                <!-- OUTPUT SECTION -->
                                 <StackPanel Orientation="Horizontal" Background="Aqua"
                                             Margin="0 0 0 6">
 
                                     <Label Content="Output"
-                                           Margin="20 0 1 0"
+                                           Width="{StaticResource TitleLabelWidth}"
+                                           Margin="{StaticResource TitleLabelMargin}"
                                            Padding="0" 
                                            FontWeight="Bold"
                                            VerticalAlignment="Center"/>
@@ -92,19 +102,22 @@
                                         ToolTipService.InitialShowDelay="2000"
                                         IsReadOnly="True" 
                                         BorderThickness="1"
-                                        Margin="10 0 10 0"
+                                        Margin="2 0 10 0"
                                         Width="550"
                                         FontSize="16"
                                     Text="{Binding Output}" />
                                 </StackPanel>
 
+                                <!-- TRIM SECTION -->
                                 <StackPanel Orientation="Horizontal" Background="Aqua"
                                             Margin="0 0 0 6">
 
                                     <Label Content="Trim"
                                            ToolTip="Trim a subsection of audio to keep" 
                                            ToolTipService.InitialShowDelay="2000"
-                                           Margin="20 0 29 0"
+
+                                           Width="{StaticResource TitleLabelWidth}"
+                                           Margin="{StaticResource TitleLabelMargin}"
                                            Padding="0" 
                                            FontWeight="Bold"
                                            VerticalAlignment="Center"/>
@@ -117,7 +130,7 @@
                                         HorizontalAlignment="Left"
                                         TextAlignment="Center"
                                         Width="50"
-                                        Margin="2 2 2 6"
+                                        Margin="2 2 -4 6"
                                         Text="{Binding TrimStart}" />
 
                                     <Label Content="s -"/>
@@ -130,7 +143,7 @@
                                         HorizontalAlignment="Left"
                                         TextAlignment="Center"
                                         Width="50"
-                                        Margin="2 2 2 6"
+                                        Margin="2 2 -4 6"
                                         Text="{Binding TrimEnd}" />
                                     <Label Content="s" Margin="0 0 10 0" />
 
@@ -149,11 +162,13 @@
 
                                 </StackPanel>
 
+                                <!-- VOLUME SECTION -->
                                 <StackPanel Orientation="Horizontal" Background="Aqua"
                                             Margin="0 0 0 6">
 
                                     <Label Content="Volume"
-                                           Margin="20 0 6 0"
+                                           Width="{StaticResource TitleLabelWidth}"
+                                           Margin="{StaticResource TitleLabelMargin}"
                                            Padding="0" 
                                            FontWeight="Bold"
                                            VerticalAlignment="Center"/>
@@ -168,11 +183,13 @@
                                     Text="{Binding Volume}" />
                                 </StackPanel>
 
+                                <!-- BITRATE SECTION -->
                                 <StackPanel Orientation="Horizontal" Background="Aqua"
-                                            Margin="0 0 0 6">
+                                            Margin="0 0 0 0">
 
                                     <Label Content="Bit Rate"
-                                           Margin="20 0 4 0"
+                                           Width="{StaticResource TitleLabelWidth}"
+                                           Margin="{StaticResource TitleLabelMargin}"
                                            Padding="0" 
                                            FontWeight="Bold"
                                            VerticalAlignment="Center"/>
@@ -185,10 +202,10 @@
                                 Text="{Binding BitRate}" />
                                 </StackPanel>
 
-                                <Label Content="MAYBE AUDIO PLAYER goes here..." />
                             </StackPanel>
                         </Border>
 
+                        <!-- TRIM SECTION LIST -->
                         <Border BorderBrush="Silver" 
                                 Background="GhostWhite"
                                 BorderThickness="2"
@@ -198,11 +215,15 @@
                                 CornerRadius="1 1 8 8">
 
                             <!-- Trim List -->
-                            <ListView Background="Transparent"  Name="TrimListView"
-                                      BorderThickness="0"
-                                      ScrollViewer.VerticalScrollBarVisibility="Visible"
-                                      Height="75"
-                                      ItemsSource="{Binding TrimList}">
+                            <ListView  Name="TrimListView"
+                                       Background="Transparent" 
+                                       Margin="6 2 2 2"
+                                       FontSize="12"
+                                       BorderThickness="0"
+                                       ScrollViewer.VerticalScrollBarVisibility="Visible"
+                                       Height="75"
+                                       ItemsSource="{Binding TrimList}">
+
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <Grid>
@@ -211,47 +232,70 @@
                                                 <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
                                             <WrapPanel Width="300">
-                                                <TextBlock Text="Start: " />
-                                                <TextBlock Text="{Binding Start}" FontWeight="Bold" />
-                                                <TextBlock Text=", " />
-                                                <TextBlock Text="End: " />
-                                                <TextBlock Text="{Binding End}" FontWeight="Bold" />
+                                                <TextBlock Text="{Binding Start}"/>
+                                                <TextBlock Text="s - " />
+                                                <TextBlock Text="{Binding End}"/>
+                                                <TextBlock Text="s" />
                                             </WrapPanel>
                                             <Button Grid.Column="1" 
                                                     Command="{Binding ElementName=TrimListView, Path=DataContext.RemoveTrimPressed}"
                                                     CommandParameter="{Binding}"
                                                     Content="X" 
-                                                    Width="18"
-                                                    Height="18"
-                                                    FontSize="12"
+                                                    FontWeight="DemiBold"
+                                                    Width="10"
+                                                    Height="10"
+                                                    FontSize="8"
+                                                    Background="Transparent"
+                                                    BorderThickness="1"
+                                                    Padding="0 -2 0 0"
                                                     Margin=" 0 2 0 2">
                                             </Button>
+
+
+
                                         </Grid>
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
+
+                                <!-- Styling - removes highlight / background from item being selected-->
+                                <ListView.ItemContainerStyle>
+                                    <Style TargetType="{x:Type ListViewItem}">
+                                        <Setter Property="Background" Value="Transparent" />
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                                    <ContentPresenter 
+                                                        HorizontalAlignment="Left"
+                                                        Margin="0 0 0 0"/>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </ListView.ItemContainerStyle>
+
 
                             </ListView>
                         </Border>
 
                         <Button 
-                                Command="{Binding AddButtonPressed}"
+                                Command="{Binding AddJobButtonPressed}"
                                 CommandParameter="{Binding Volume}"
                                 HorizontalAlignment="Right"
                                 Margin="0 0 15 0"
                                 Width="75" 
-                                Height="25">
+                                Height="25"
+                                Content="Add">
                             <Button.Resources>
                                 <Style TargetType="{x:Type Border}">
                                     <Setter Property="CornerRadius" Value="4 4 4 4"/>
                                 </Style>
                             </Button.Resources>
-                            Add
                         </Button>
 
                     </StackPanel>
                 </TabItem>
-                <TabItem Header="+" />
             </TabControl>
+
             <!-- Job Queue -->
             <DataGrid Grid.Column="0" Grid.Row="1" HeadersVisibility="Column">
             </DataGrid>

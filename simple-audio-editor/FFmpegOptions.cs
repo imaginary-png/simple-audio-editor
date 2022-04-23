@@ -47,6 +47,23 @@ namespace simple_audio_editor
         public bool BitRateFlag { get; set; }
         public bool TrimFlag { get; set; } //trim flag is used in argsbuilder.
 
+        /// <summary> 
+        /// Used to set arguments for the FFmpeg command-line. Input Output paths and empty.<br/>
+        /// Defaults: Volume = 1.0. Bit Rate = 128.
+        /// </summary>
+        /// <param name="input">Input file path</param>
+        /// <param name="output">Output path, creates new file and folders as necessary</param>
+        /// <param name="volume">Output Volume, 1 = 100%, 0.5 = 50% of current volume. Default: 1.0</param>
+        /// <param name="bitRate">Output bitrate. Default: 128</param>
+        public FFmpegOptions()
+        {
+            Input = "";
+            Output = "";
+            Volume = 1;
+            BitRate = 1;
+            TrimTimes = new List<TrimTime>();
+        }
+
         /// <summary>
         /// Used to set arguments for the FFmpeg command-line. <br/>
         /// Defaults: Volume = 1.0. Bit Rate = 128.

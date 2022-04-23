@@ -4,11 +4,11 @@ using simple_audio_editor;
 
 namespace simple_audio_editor_GUI.Commands
 {
-    public class RemoveTrimCommand : ICommand
+    public class GenericCommand<T> : ICommand
     {
-        private Action<TrimTime> _action;
+        private Action<T> _action;
 
-        public RemoveTrimCommand(Action<TrimTime> action)
+        public GenericCommand(Action<T> action)
         {
             _action = action;
         }
@@ -20,10 +20,7 @@ namespace simple_audio_editor_GUI.Commands
 
         public void Execute(object? parameter)
         {
-            if (parameter is TrimTime)
-            {
-                _action?.Invoke((TrimTime)parameter);
-            }
+            _action?.Invoke((T)parameter);
         }
 
         public event EventHandler? CanExecuteChanged;

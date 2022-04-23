@@ -13,6 +13,12 @@ namespace simple_audio_editor_GUI.ViewModels
 {
     public class MainWindowViewModel : INotifyPropertyChanged
     {
+        private readonly string _default_Input = "";
+        private readonly string _default_Output = "";
+        private readonly double _default_Volume = 1.0;
+        private readonly int _default_Bit_Rate = 128;
+        private readonly int _default_Trim_Time = 0;
+
         private string _input;
         private string _output;
         private double _volume;
@@ -20,7 +26,7 @@ namespace simple_audio_editor_GUI.ViewModels
         private int _trimStart;
         private int _trimEnd;
 
-        private IList<FFmpegOptions> _ffmpegOptions { get; set; }
+        private ObservableCollection<FFmpegOptions> _ffmpegOptions { get; set; }
         private FFmpegProcess _ffmpegProcess { get; set; }
         
         public ObservableCollection<TrimTime> TrimList { get; set; }
@@ -91,7 +97,7 @@ namespace simple_audio_editor_GUI.ViewModels
             }
         }
 
-        public ICommand AddButtonPressed { get; set; }
+        public ICommand AddJobButtonPressed { get; set; }
         public ICommand AddTrimTimeButtonPressed { get; set; }
         public ICommand OpenFileButtonClicked { get; set; }
         public ICommand RemoveTrimPressed { get; set; }
@@ -99,28 +105,66 @@ namespace simple_audio_editor_GUI.ViewModels
 
         public MainWindowViewModel()
         {
-            _ffmpegOptions = new List<FFmpegOptions>();
+            _ffmpegOptions = new ObservableCollection<FFmpegOptions>();
             TrimList = new ObservableCollection<TrimTime>();
             _ffmpegProcess = new FFmpegProcess();
 
-            Input = "hello";
-            Output = "Goodbye";
-            Volume = 1.0;
-            BitRate = 128;
-            TrimStart = 0;
-            TrimEnd = 0;
+            Input = _default_Input;
+            Output = _default_Output;
+            Volume = _default_Volume;
+            BitRate = _default_Bit_Rate;
+            TrimStart = _default_Trim_Time;
+            TrimEnd = _default_Trim_Time;
 
-            AddButtonPressed = new CustomCommand(AddButton_Executed);
+            AddJobButtonPressed = new CustomCommand(AddJobButton_Executed);
             OpenFileButtonClicked = new CustomCommand(OpenFile_Executed);
             AddTrimTimeButtonPressed = new CustomCommand(AddTrimTime_Executed);
-            RemoveTrimPressed = new RemoveTrimCommand(RemoveTrimTime_Executed);
+            RemoveTrimPressed = new GenericCommand<TrimTime>(RemoveTrimTime_Executed);
 
         }
 
 
         #region Command stuff
 
-        public void AddButton_Executed()
+        public void AddJobButton_Executed()
+        {
+            //create new ffmpegoptions here.
+            var opt = new FFmpegOptions();
+            
+            if (TrimList.Count > 0)
+            {
+                opt = new FFmpegOptions(Input, Output, TrimList, Volume, BitRate);
+                _ffmpegOptions.Add(opt);
+                //_ffmpegOptions.Add(new FFmpegOptions(Input, Output, TrimList, Volume, BitRate));
+            }
+            else
+            {
+                opt = new FFmpegOptions(Input, Output, TrimList, Volume, BitRate);
+                _ffmpegOptions.Add(opt);
+                //_ffmpegOptions.Add(new FFmpegOptions(Input, Output, TrimList, Volume, BitRate));
+            }
+
+            //clear current input, output, etc to default values.
+            ResetAllInputs();
+
+
+            var optionAsText= "";
+            var argAsText = "";
+
+            foreach (var f in _ffmpegOptions)
+            {
+                optionAsText += $"Options: In: {f.Input}, Out: {f.Output}, Volume: {f.Volume}, BitRate: {f.BitRate}";
+                argAsText = FFmpegArgsBuilder.Create(opt);
+
+            }
+
+            var win = new Window();
+            win.Content = new TextBox { Text = "\n\n"+ optionAsText + "\n\n" + argAsText };
+            win.SizeToContent = SizeToContent.WidthAndHeight;
+            win.ShowDialog();
+        }
+        
+        public void Test_Executed()
         {
             //create new ffmpegoptions here.
             
@@ -217,6 +261,15 @@ namespace simple_audio_editor_GUI.ViewModels
             await _ffmpegProcess.Start();
         }
 
+        private void ResetAllInputs()
+        {
+            Input = _default_Input;
+            Output = _default_Output;
+            Volume = _default_Volume;
+            BitRate = _default_Bit_Rate;
+            TrimStart = _default_Trim_Time;
+            TrimEnd = _default_Trim_Time;
+        }
         
 
         #endregion
