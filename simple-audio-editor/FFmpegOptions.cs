@@ -60,7 +60,7 @@ namespace simple_audio_editor
             Input = "";
             Output = "";
             Volume = 1;
-            BitRate = 1;
+            BitRate = 128;
             TrimTimes = new List<TrimTime>();
         }
 

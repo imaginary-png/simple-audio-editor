@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Printing;
 using System.Runtime.CompilerServices;
 using simple_audio_editor;
 using simple_audio_editor_GUI.Annotations;
@@ -44,6 +45,25 @@ namespace simple_audio_editor_GUI.Models
         protected virtual void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public override string ToString()
+        {
+            var trimArgs = "";
+            if (Options.TrimFlag)
+            {
+                foreach (var time in Options.TrimTimes)
+                {
+                    trimArgs += $"\t{time.Start} - {time.End}s\n";
+                }
+            }
+
+            return $"Input:      {Options.Input}\n" +
+                   $"Output:     {Options.Output}\n" +
+                   $"Volume:     {Options.Volume}\n" +
+                   $"Bit Rate:   {Options.BitRate}\n" +
+                   $"Trim args:  \n{trimArgs}\n" +
+                   $"Status:     {Status}";
         }
     }
 
