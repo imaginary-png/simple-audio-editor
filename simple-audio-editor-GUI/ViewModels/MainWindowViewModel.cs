@@ -179,7 +179,16 @@ namespace simple_audio_editor_GUI.ViewModels
 
         public void AddJobButton_Executed()
         {
+            //if file doesn't exist, or same file already queued for job, ignore. // maybe throw popup 
             if (!File.Exists(Input)) return;
+            if (Jobs.FirstOrDefault(j => j.Options.Input == Input) != null)
+            {
+                MessageBox.Show($"File: {Input} \nAlready exists in job queue. Please remove it before trying to add it again.",
+                    "Job already exists for file.",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+                return;
+            };
 
             //create new ffmpegoptions here.
             var opt = new FFmpegOptions(Input, Output, new List<TrimTime>(TrimList), Volume, BitRate);
@@ -249,7 +258,7 @@ namespace simple_audio_editor_GUI.ViewModels
 
         public void RemoveFinishedJobs_Executed()
         {
-           // var tempList = new List<Job>();
+            // var tempList = new List<Job>();
 
             for (int i = 0; i < Jobs.Count; i++)
             {
@@ -259,18 +268,18 @@ namespace simple_audio_editor_GUI.ViewModels
                 }
             }
 
-           /* foreach (var job in Jobs)
-            {
-                if (job.Status == JobStatus.Success.ToString())
-                {
-                    tempList.Add(job);
-                }
-            }
+            /* foreach (var job in Jobs)
+             {
+                 if (job.Status == JobStatus.Success.ToString())
+                 {
+                     tempList.Add(job);
+                 }
+             }
 
-            foreach (var job in tempList)
-            {
-                Jobs.Remove(job);
-            }*/
+             foreach (var job in tempList)
+             {
+                 Jobs.Remove(job);
+             }*/
 
         }
 

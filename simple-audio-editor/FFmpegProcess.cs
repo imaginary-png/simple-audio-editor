@@ -142,35 +142,7 @@ namespace simple_audio_editor
                 exitCode = p.ExitCode;
             }
 
-            var inputStartIndex = CultureInfo.InvariantCulture.CompareInfo.IndexOf(parameters, "-i ") + 4;
-            var input = parameters.Substring(inputStartIndex, CultureInfo.InvariantCulture.CompareInfo.IndexOf(parameters, "\" -filter") - inputStartIndex);
-
-            var outputStartIndex = 0;
-            var output = "";
-            if (parameters.Contains("[outa]"))
-            {
-                outputStartIndex = CultureInfo.InvariantCulture.CompareInfo.IndexOf(parameters, "[outa] 0\"") + 7;
-                output = parameters.Substring(outputStartIndex,
-                    CultureInfo.InvariantCulture.CompareInfo.LastIndexOf(parameters, "\"") - outputStartIndex);
-            }
-            else
-            {
-                outputStartIndex = CultureInfo.InvariantCulture.CompareInfo.IndexOf(parameters, "k \"") + 3;
-                output = parameters.Substring(outputStartIndex,
-                    CultureInfo.InvariantCulture.CompareInfo.LastIndexOf(parameters, "\"") - outputStartIndex);
-            }
-
-
-            if (exitCode == 0) //apparently ffmpeg will sometimes return 0 even if there is an error. 
-            {
-                return new ConversionResult() { Input = input, Output = output, Succeeded = true, StartTime = startTime, EndTime = DateTime.UtcNow };
-                // return (input, true);
-            }
-            else
-            {
-                return new ConversionResult() { Input = input, Output = output, Succeeded = false, StartTime = startTime, EndTime = DateTime.UtcNow };
-                // return (input, false);
-            }
+            return GetConversionResult(exitCode, startTime, parameters);
         }
         
         #region Helpers
@@ -189,6 +161,40 @@ namespace simple_audio_editor
             Directory.CreateDirectory(outputDir);
         }
 
+        private ConversionResult GetConversionResult(int exitCode, DateTime startTime, string parameters)
+        {
+            var inputStartIndex = CultureInfo.InvariantCulture.CompareInfo.IndexOf(parameters, "-i ") + 4;
+            var input = parameters.Substring(inputStartIndex, CultureInfo.InvariantCulture.CompareInfo.IndexOf(parameters, "\" -filter") - inputStartIndex);
+
+            var outputStartIndex = 0;
+            var output = "";
+            if (parameters.Contains("[outa]"))
+            {
+                outputStartIndex = CultureInfo.InvariantCulture.CompareInfo.IndexOf(parameters, "[outa] \"") + 8;
+                output = parameters.Substring(outputStartIndex,
+                    CultureInfo.InvariantCulture.CompareInfo.LastIndexOf(parameters, "\"") - outputStartIndex);
+                output += "||><>o<><";
+            }
+            else
+            {
+                outputStartIndex = CultureInfo.InvariantCulture.CompareInfo.IndexOf(parameters, "k \"") + 3;
+                output = parameters.Substring(outputStartIndex,
+                    CultureInfo.InvariantCulture.CompareInfo.LastIndexOf(parameters, "\"") - outputStartIndex);
+                
+            }
+
+
+            if (exitCode == 0) //apparently ffmpeg will sometimes return 0 even if there is an error. 
+            {
+                return new ConversionResult() { Input = input, Output = output, Succeeded = true, StartTime = startTime, EndTime = DateTime.UtcNow };
+                // return (input, true);
+            }
+            else
+            {
+                return new ConversionResult() { Input = input, Output = output, Succeeded = false, StartTime = startTime, EndTime = DateTime.UtcNow };
+                // return (input, false);
+            }
+        }
         
 
         #region Add and remove to OptionsQueue methods
