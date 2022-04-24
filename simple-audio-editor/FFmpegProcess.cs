@@ -182,8 +182,7 @@ namespace simple_audio_editor
                     CultureInfo.InvariantCulture.CompareInfo.LastIndexOf(parameters, "\"") - outputStartIndex);
                 
             }
-
-
+            
             if (exitCode == 0) //apparently ffmpeg will sometimes return 0 even if there is an error. 
             {
                 return new ConversionResult() { Input = input, Output = output, Succeeded = true, StartTime = startTime, EndTime = DateTime.UtcNow };
