@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using System.CodeDom;
+using Microsoft.Win32;
 using simple_audio_editor;
 using simple_audio_editor_GUI.Annotations;
 using simple_audio_editor_GUI.Commands;
@@ -6,6 +7,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -177,6 +179,8 @@ namespace simple_audio_editor_GUI.ViewModels
 
         public void AddJobButton_Executed()
         {
+            if (!File.Exists(Input)) return;
+
             //create new ffmpegoptions here.
             var opt = new FFmpegOptions(Input, Output, new List<TrimTime>(TrimList), Volume, BitRate);
             Jobs.Add(new Job(opt));
