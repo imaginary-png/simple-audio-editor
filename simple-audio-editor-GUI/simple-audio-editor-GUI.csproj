@@ -5,6 +5,7 @@
     <TargetFramework>net5.0-windows</TargetFramework>
     <RootNamespace>simple_audio_editor_GUI</RootNamespace>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon>idk icon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
