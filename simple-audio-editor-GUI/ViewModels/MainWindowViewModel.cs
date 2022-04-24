@@ -232,6 +232,8 @@ namespace simple_audio_editor_GUI.ViewModels
 
         public void AddTrimTime_Executed()
         {
+            if (Input == _default_Input) return;
+
             if (TrimStart < TrimEnd)
             {
                 var trimTime = new TrimTime(TrimStart, TrimEnd);
@@ -267,20 +269,6 @@ namespace simple_audio_editor_GUI.ViewModels
                     Jobs.Remove(Jobs[i]);
                 }
             }
-
-            /* foreach (var job in Jobs)
-             {
-                 if (job.Status == JobStatus.Success.ToString())
-                 {
-                     tempList.Add(job);
-                 }
-             }
-
-             foreach (var job in tempList)
-             {
-                 Jobs.Remove(job);
-             }*/
-
         }
 
         public void RemoveAllJobs_Executed()

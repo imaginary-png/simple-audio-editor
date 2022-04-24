@@ -150,7 +150,7 @@
                                         Text="{Binding TrimEnd}" />
                                 <Label Content="s" Margin="0 0 10 0" />
 
-                                <Button
+                                <Button 
                                         Width="35"
                                         Height="20"
                                         FontSize="12"
@@ -161,6 +161,7 @@
                                             <Setter Property="CornerRadius" Value="2 2 2 2"/>
                                         </Style>
                                     </Button.Resources>
+
                                 </Button>
 
                             </StackPanel>
