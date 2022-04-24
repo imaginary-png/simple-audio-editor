@@ -1,10 +1,12 @@
-﻿using System.CodeDom;
+﻿using System;
+using System.CodeDom;
 using Microsoft.Win32;
 using simple_audio_editor;
 using simple_audio_editor_GUI.Annotations;
 using simple_audio_editor_GUI.Commands;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -35,12 +37,11 @@ namespace simple_audio_editor_GUI.ViewModels
         private int _fontSize;
 
         private FFmpegProcess FFmpegProcesses { get; set; }
-
-        //private ObservableCollection<FFmpegOptions> _ffmpegOptions { get; set; }
+        private ObservableCollection<ConversionResult> _results;
 
         public ObservableCollection<Job> Jobs { get; set; }
-
         public ObservableCollection<TrimTime> TrimList { get; set; }
+        
 
         public string Input
         {
@@ -149,6 +150,8 @@ namespace simple_audio_editor_GUI.ViewModels
             Jobs = new ObservableCollection<Job>();
 
             FFmpegProcesses = new FFmpegProcess();
+            _results = FFmpegProcesses.Results;
+            _results.CollectionChanged += SetStatusResults;
 
             TrimList = new ObservableCollection<TrimTime>();
 
@@ -262,15 +265,17 @@ namespace simple_audio_editor_GUI.ViewModels
 
         public void RemoveFinishedJobs_Executed()
         {
-            // var tempList = new List<Job>();
+            var tempList = new List<Job>();
 
-            for (int i = 0; i < Jobs.Count; i++)
+            foreach (var job in Jobs)
             {
-                if (Jobs[i].Status == JobStatus.Success.ToString())
+                if (job.Status == JobStatus.Success.ToString())
                 {
-                    Jobs.Remove(Jobs[i]);
+                    tempList.Add(job);
                 }
             }
+
+            tempList.ForEach(job => Jobs.Remove(job));
         }
 
         public void RemoveAllJobs_Executed()
@@ -319,9 +324,15 @@ namespace simple_audio_editor_GUI.ViewModels
 
             outputPath += "Output" + "\\" + inputSplit[^1];
 
-            return outputPath;
+            return OutputPathAppendMp3(outputPath);
         }
 
+        private string OutputPathAppendMp3(string outputPath )
+        {
+            var outputSplit = outputPath.Split(".");
+            outputSplit[^1] = "mp3";
+            return string.Join(".", outputSplit);
+        }
         private async void StartFFmpegProcess()
         {
             //where job status != Success, select the ffmpeg options.
@@ -336,24 +347,29 @@ namespace simple_audio_editor_GUI.ViewModels
             SetStatusToProcessing();
             await FFmpegProcesses.Start();
             NotProcessingJobs = true;
-            SetStatusResults();
         }
 
         private void SetStatusToProcessing()
         {
             foreach (var job in Jobs)
             {
+                if (job.Status == JobStatus.Success.ToString()) continue;
                 job.SetStatus(JobStatus.Processing);
             }
         }
 
-        private void SetStatusResults()
+        private void SetStatusResults(object? sender, NotifyCollectionChangedEventArgs args)
         {
-            foreach (var conversionResult in FFmpegProcesses.Results)
-            {
-                var j = Jobs.First(j => j.Options.Input == conversionResult.Input);
+            if (args.NewItems == null) return;
 
-                j.SetStatus(conversionResult.Succeeded ? JobStatus.Success : JobStatus.Failed);
+            foreach (var item in args.NewItems)
+            {
+                var result = item as ConversionResult;
+                if (result == null) return;
+
+                var j = Jobs.First(j => j.Options.Input == result.Input);
+
+                j.SetStatus(result.Succeeded ? JobStatus.Success : JobStatus.Failed);
             }
         }
 
