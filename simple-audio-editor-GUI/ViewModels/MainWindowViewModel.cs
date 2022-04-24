@@ -220,7 +220,9 @@ namespace simple_audio_editor_GUI.ViewModels
         public void OpenFile_Executed()
         {
             var open = new OpenFileDialog();
-            open.Filter = "Mp3 (*.mp3)|*.mp3|Mp4 (*.mp4)|*.mp4|WebM (*.webm)|*.webm";
+            open.Filter = "All Files |*.*|" +
+                          "Audio (*.mp3, *.wav, *.flac, *.m4a, *.aac, *.ogg)|*.mp3;*.wav;*.flac;*.m4a;*.aac;*.ogg|" +
+                          "Video (*.mkv, *.mp4, *.webm, *.wmv, *.mov, *.m4v; )|*.mkv;*.mp4;*.webm;*.wmv;*.mov;*.m4v";
             open.ShowDialog();
             if (open.FileName != string.Empty)
             {
