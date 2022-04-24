@@ -1,4 +1,4 @@
-# simple-audio-editor
+# simple-audio-trimmer
 A basic ffmpeg wrapper with a WPF GUI created using MVVM wth commands + zero code in code-behind. - Requires .net 5.0 
 
 I created this project to learn, and because it would be personally useful to me for cutting out ads from podcasts.
