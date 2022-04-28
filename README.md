@@ -57,3 +57,4 @@ or  without trim args
 * Maybe rework GUI so that it takes in time to REMOVE instead of keep, as the current trim works. -- this seems like it would be more intuitive and user-friendly.
 * Save config - font size, pref. default volume, bitrate, etc.
 * Let user pick output location.
+* find a package to get files length, and autofill trim end to file length
