@@ -58,3 +58,4 @@ or  without trim args
 * Save config - font size, pref. default volume, bitrate, etc.
 * Let user pick output location.
 * find a package to get files length, and autofill trim end to file length
+* Change trim times to handle doubles instead of ints.
