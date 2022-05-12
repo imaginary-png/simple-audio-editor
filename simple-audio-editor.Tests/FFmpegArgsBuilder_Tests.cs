@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using simple_audio_editor;
+﻿using System.Collections.Generic;
 using Xunit;
 
 namespace simple_audio_editor.Tests

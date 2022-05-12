@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Input;
-using simple_audio_editor;
 
 namespace simple_audio_editor_GUI.Commands
 {

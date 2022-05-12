@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
-
-namespace simple_audio_editor
+﻿namespace simple_audio_editor
 {
     public static class FFmpegArgsBuilder
     {

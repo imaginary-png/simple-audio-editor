@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -144,7 +143,7 @@ namespace simple_audio_editor
 
             return GetConversionResult(exitCode, startTime, parameters);
         }
-        
+
         #region Helpers
 
         private void MakeOutputDir(string output)
@@ -152,7 +151,7 @@ namespace simple_audio_editor
             var split = output.Split("\\");
 
             var outputDir = "";
-            for (var i = 0; i < split.Length-1; i++)
+            for (var i = 0; i < split.Length - 1; i++)
             {
                 outputDir += split[i] + "\\";
             }
@@ -180,9 +179,9 @@ namespace simple_audio_editor
                 outputStartIndex = CultureInfo.InvariantCulture.CompareInfo.IndexOf(parameters, "k \"") + 3;
                 output = parameters.Substring(outputStartIndex,
                     CultureInfo.InvariantCulture.CompareInfo.LastIndexOf(parameters, "\"") - outputStartIndex);
-                
+
             }
-            
+
             if (exitCode == 0) //apparently ffmpeg will sometimes return 0 even if there is an error. 
             {
                 return new ConversionResult() { Input = input, Output = output, Succeeded = true, StartTime = startTime, EndTime = DateTime.UtcNow };
@@ -194,7 +193,7 @@ namespace simple_audio_editor
                 // return (input, false);
             }
         }
-        
+
 
         #region Add and remove to OptionsQueue methods
 
@@ -242,11 +241,11 @@ namespace simple_audio_editor
 
         public bool ClearQueue()
         {
-           OptionsQueue.Clear();
+            OptionsQueue.Clear();
 
-           if (OptionsQueue.Count == 0) return true;
+            if (OptionsQueue.Count == 0) return true;
 
-           return false;
+            return false;
         }
         #endregion
 

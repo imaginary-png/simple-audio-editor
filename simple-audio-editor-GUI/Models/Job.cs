@@ -1,9 +1,6 @@
-﻿using System;
-using System.ComponentModel;
-using System.Printing;
-using System.Runtime.CompilerServices;
-using simple_audio_editor;
+﻿using simple_audio_editor;
 using simple_audio_editor_GUI.Annotations;
+using System.ComponentModel;
 
 namespace simple_audio_editor_GUI.Models
 {

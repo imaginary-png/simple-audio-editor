@@ -1,9 +1,8 @@
-﻿using System;
-using System.CodeDom;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
 using simple_audio_editor;
 using simple_audio_editor_GUI.Annotations;
 using simple_audio_editor_GUI.Commands;
+using simple_audio_editor_GUI.Models;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -12,10 +11,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
-using simple_audio_editor_GUI.Models;
 
 namespace simple_audio_editor_GUI.ViewModels
 {
@@ -42,7 +38,7 @@ namespace simple_audio_editor_GUI.ViewModels
 
         public ObservableCollection<Job> Jobs { get; set; }
         public ObservableCollection<TrimTime> TrimList { get; set; }
-        
+
 
         public string Input
         {
@@ -328,7 +324,7 @@ namespace simple_audio_editor_GUI.ViewModels
             return OutputPathAppendMp3(outputPath);
         }
 
-        private string OutputPathAppendMp3(string outputPath )
+        private string OutputPathAppendMp3(string outputPath)
         {
             var outputSplit = outputPath.Split(".");
             outputSplit[^1] = "mp3";

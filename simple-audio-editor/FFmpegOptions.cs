@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Sockets;
 
 namespace simple_audio_editor
 {
@@ -115,7 +112,7 @@ namespace simple_audio_editor
         public void AddTrimSection(int start, int end = 0)
         {
             //bother verifying start is positive? negative values are valid args for ffmpeg and result as if start was 0 seconds.
-            TrimTimes.Add(new TrimTime(start,end));
+            TrimTimes.Add(new TrimTime(start, end));
             TrimFlag = true;
         }
 
@@ -124,7 +121,7 @@ namespace simple_audio_editor
             return RemoveTrimSection(new TrimTime(start, end));
         }
 
-        
+
         public bool RemoveTrimSection(TrimTime trimTime)
         {
             return TrimTimes.Remove(trimTime);
@@ -133,7 +130,7 @@ namespace simple_audio_editor
 
         #region Equality 
 
-        public override bool Equals(object? obj) 
+        public override bool Equals(object? obj)
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
@@ -157,7 +154,7 @@ namespace simple_audio_editor
         }
 
         public static bool operator !=(FFmpegOptions obj1, FFmpegOptions obj2) => !(obj1 == obj2);
-        
+
         public override int GetHashCode()
         {
             return HashCode.Combine(_bitRate, Input, Output, Volume, TrimTimes);

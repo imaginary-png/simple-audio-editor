@@ -30,7 +30,7 @@ namespace simple_audio_editor.Tests
             //Arrange
             var opt = new FFmpegOptions("", "");
             var opt2 = new FFmpegOptions("", "");
-            var optList = new List<FFmpegOptions> {opt, opt2};
+            var optList = new List<FFmpegOptions> { opt, opt2 };
             var ffmpeg = new FFmpegProcess(optList);
             var expected = 1;
 
@@ -48,7 +48,7 @@ namespace simple_audio_editor.Tests
             //Arrange
             var opt = new FFmpegOptions("", "");
             var opt2 = new FFmpegOptions("", "");
-            var optList = new List<FFmpegOptions> {opt, opt2};
+            var optList = new List<FFmpegOptions> { opt, opt2 };
             var ffmpeg = new FFmpegProcess(optList);
             var expected = 0;
 
@@ -59,7 +59,7 @@ namespace simple_audio_editor.Tests
             //Assert
             Assert.Equal(expected, actual);
         }
-        
+
         [Fact]
         public void RemoveFromQueue_Removes_ListOfConversionResults_FromOptionsQueueList()
         {
@@ -67,7 +67,7 @@ namespace simple_audio_editor.Tests
             var opt = new FFmpegOptions("input1", "output1");
             var opt2 = new FFmpegOptions("input2", "output2");
             var opt3 = new FFmpegOptions("input3", "output3");
-            var optList = new List<FFmpegOptions> {opt, opt2, opt3};
+            var optList = new List<FFmpegOptions> { opt, opt2, opt3 };
             var ffmpeg = new FFmpegProcess(optList);
             var time = DateTime.UtcNow;
 
@@ -94,7 +94,7 @@ namespace simple_audio_editor.Tests
             var opt = new FFmpegOptions("input1", "output1");
             var opt2 = new FFmpegOptions("input2", "output2");
             var opt3 = new FFmpegOptions("input3", "output3");
-            var optList = new List<FFmpegOptions> {opt, opt2, opt3};
+            var optList = new List<FFmpegOptions> { opt, opt2, opt3 };
             var ffmpeg = new FFmpegProcess(optList);
             var time = DateTime.UtcNow;
 
