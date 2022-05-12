@@ -1,14 +1,14 @@
-# simple-audio-editor
+# simple-audio-trimmer
 A basic ffmpeg wrapper with a WPF GUI created using MVVM wth commands + zero code in code-behind. - Requires .net 5.0 
 
-I created this project to learn, and because it would be personally useful to me for cutting out ads from podcasts.
+I created this project to learn, and because it would be useful to me for cutting out ads from the beginning and end of podcasts.
 
 This program uses ffmpeg to do some basic operations on audio tracks and convert to mp3.
 
-It's a bit counterintuitive, but trim cuts out a snippet of audio to KEEP, the slightly confusing name comes from the ffmpeg documentations https://ffmpeg.org/ffmpeg-filters.html#atrim
+It's a bit counterintuitive, but trim cuts out a snippet of audio to keep, the slightly confusing name comes from the ffmpeg documentations https://ffmpeg.org/ffmpeg-filters.html#atrim
 
 
-The GUI is a graphical user interface that allows you to select an audio file, adjust volume and bitrate, and choose timeframe snippets for the final output. 
+The graphical user interface allows you to select an audio file, adjust volume and bitrate, and choose timeframe snippets for the final output. 
 
 
 ## How to use
@@ -57,3 +57,5 @@ or  without trim args
 * Maybe rework GUI so that it takes in time to REMOVE instead of keep, as the current trim works. -- this seems like it would be more intuitive and user-friendly.
 * Save config - font size, pref. default volume, bitrate, etc.
 * Let user pick output location.
+* find a package to get files length, and autofill trim end to file length
+* Change trim times to handle doubles instead of ints.
