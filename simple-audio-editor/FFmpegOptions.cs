@@ -168,10 +168,10 @@ namespace simple_audio_editor
 
     public readonly struct TrimTime
     {
-        public readonly int Start { get; }
-        public readonly int End { get; }
+        public readonly double Start { get; }
+        public readonly double End { get; }
 
-        public TrimTime(int start, int end = 0)
+        public TrimTime(double start, double end = 0)
         {
             Start = start;
             End = end;

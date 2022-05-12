@@ -14,6 +14,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using simple_audio_editor_GUI.Models;
 
 namespace simple_audio_editor_GUI.ViewModels
@@ -24,15 +25,15 @@ namespace simple_audio_editor_GUI.ViewModels
         private readonly string _default_Output = "";
         private readonly double _default_Volume = 1.0;
         private readonly int _default_Bit_Rate = 128;
-        private readonly int _default_Trim_Time = 0;
+        private readonly double _default_Trim_Time = 0;
         private readonly int _default_Font_Size = 12;
 
         private string _input;
         private string _output;
         private double _volume;
         private int _bitRate;
-        private int _trimStart;
-        private int _trimEnd;
+        private double _trimStart;
+        private double _trimEnd;
         private bool _notNotProcessingJobs;
         private int _fontSize;
 
@@ -87,7 +88,7 @@ namespace simple_audio_editor_GUI.ViewModels
             }
         }
 
-        public int TrimStart
+        public double TrimStart
         {
             get => _trimStart;
             set
@@ -98,7 +99,7 @@ namespace simple_audio_editor_GUI.ViewModels
             }
         }
 
-        public int TrimEnd
+        public double TrimEnd
         {
             get => _trimEnd;
             set

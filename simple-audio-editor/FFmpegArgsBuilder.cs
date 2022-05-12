@@ -71,7 +71,7 @@ namespace simple_audio_editor
         /// <param name="startTimeInSeconds">Save section from: (seconds)</param>
         /// <param name="endTimeInSeconds">Save section to: (seconds)<br/>Default: 0</param>
         /// <param name="volume">Volume for the trimmed section<br/>Default: 0</param>
-        internal static string TrimSection(int count, int startTimeInSeconds, int endTimeInSeconds = 0, double volume = 1.0)
+        internal static string TrimSection(int count, double startTimeInSeconds, double endTimeInSeconds = 0, double volume = 1.0)
         {
             if (startTimeInSeconds <= endTimeInSeconds)
             {
